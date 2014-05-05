@@ -43,8 +43,9 @@ def serve():
     torrents = t.get_torrent_list([])
     for torrent in torrents:
       if torrent['name'] == name:
-        main_file = largestfile(path.join(torrent['downloadDir'], torrent['name']))
-        return json.dumps({'file': main_file[1]})
+        main_file_path = largestfile(path.join(torrent['downloadDir'], torrent['name'])).split('tobobo')[1]
+        main_file_url = path.join(config.get('transmission', 'http_base'), main_file_path.split('tobobo')[1])
+        return json.dumps({'file': main_file_url})
 
   tobobrowse = app()
   tobobrowse = StripPathMiddleware(tobobrowse)

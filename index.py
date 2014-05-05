@@ -2,6 +2,13 @@ from bottle import app, route, run, auth_basic
 from daemonize import Daemonize
 from transmission import *
 import json
+import ConfigParser
+
+config = ConfigParser.ConfigParser()
+
+if len(config.read('config')) < 1:
+  print 'No config file.'
+  exit(1)
 
 class StripPathMiddleware(object):
   def __init__(self, app):
@@ -23,7 +30,7 @@ def index():
 @route('/torrents')
 @auth_basic(check)
 def torrents():
-  t = Transmission('localhost', 30446, '/transmission/rpc', 'tobobo', '')
+  t = Transmission('localhost', 30446, '/transmission/rpc', config.get('transmission', 'username'), config.get('transmission', 'password'))
   return json.dumps({'torrents': t.get_torrent_list([])})
 
 def main():

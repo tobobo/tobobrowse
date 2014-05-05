@@ -74,25 +74,20 @@ def get_file_and_add_details(torrent):
 
 def serve():
 
-  transmission_host = 'localhost'
-  transmission_port = 30446
-  transmission_user = ''
-  transmission_passwd = ''
+  transmission = {'host': 'localhost', 'port': 30446, 'user': '', 'passwd': ''}
 
   def transmission():
-    print 'transmission deets', transmission_user, transmission_passwd
-    return Transmission(transmission_host, transmission_port, '/transmission/rpc', transmission_user, transmission_passwd)
+    print 'transmission deets', transmission['user'], transmission['passwd']
+    return Transmission(transmission['host'], transmission['port'], '/transmission/rpc', transmission['user'], transmission['passwd'])
   
   def user_auth(user, passwd):
-    nonlocal transmission_user
-    nonlocal transmission_passwd
-    
+
     print 'user auth', user, passwd
-    transmission_request = requests.get('http://%s:%d' % (transmission_host, transmission_port), auth=(user, passwd), timeout=0.5)
+    transmission_request = requests.get('http://%s:%d' % (transmission['host'], transmission['port']), auth=(user, passwd), timeout=0.5)
     print 'status code', transmission_request.status_code
     if transmission_request.status_code == 200:
-      transmission_user = user
-      transmission_passwd = passwd
+      transmission['user'] = user
+      transmission['passwd'] = passwd
       return True
     return False
 

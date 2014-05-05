@@ -9,7 +9,7 @@ def check(user, passwd):
 @route('/')
 @auth_basic(check)
 def index():
-  return 'hello, chumpo'
+  return 'hello, friend!'
 
 def main():
   run(host='chips.whatbox.ca', port=8000)

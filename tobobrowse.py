@@ -7,6 +7,7 @@ from os import path
 import urllib
 import urlparse
 import tarfile
+import re
 
 config = ConfigParser.ConfigParser()
 
@@ -35,14 +36,20 @@ def path_to_url(path, file_base, url_base):
 def torrent_folder_path(torrent):
   return path.join(torrent['downloadDir'], torrent['name'])
 
-# def get_file_url(torrent):
-#   main_file_path = largestfile(torrent_folder_path(torrent))
-#   return path_to_url(main_file_path, torrent['downloadDir'], config.get('transmission', 'http_base'))
-
 def get_file_url(torrent):
   torrent_folder = torrent_folder_path(torrent)
-  torrent_tar = make_tarfile(torrent_folder + ".tar.gz", torrent_folder)
-  return path_to_url(torrent_tar, torrent['downloadDir'], config.get('transmission', 'http_base'))
+  largest_file = largestfile(torrent_folder)
+  largest_file_name = path.basename(largest_file_path)
+  if path.samefile(torrent_folder, largest_file_path):
+    main_file = largest_file
+  elif re.match(r'(\.mp4|\.avi|\.3gp|\.mkv)$', largest_file_name):
+    main_file = largest_file
+  else
+    print 'going to tar'
+    main_file = largest_file
+    # main_file = make_tarfile(torrent_folder + ".tar.gz", torrent_folder)
+
+  return path_to_url(main_file, torrent['downloadDir'], config.get('transmission', 'http_base'))
 
 def user_auth(user, passwd):
   if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'passwd'):

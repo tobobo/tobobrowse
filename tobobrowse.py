@@ -40,15 +40,13 @@ def get_file_url(torrent):
   torrent_folder = torrent_folder_path(torrent)
   largest_file = largestfile(torrent_folder)
   largest_file_name = path.basename(largest_file)
-  print 'largest file name', largest_file_name
+  
   if path.samefile(torrent_folder, largest_file):
     main_file = largest_file
   elif largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv')):
     main_file = largest_file
   else:
-    print 'going to tar'
-    main_file = largest_file
-    # main_file = make_tarfile(torrent_folder + ".tar.gz", torrent_folder)
+    main_file = make_tarfile(torrent_folder + ".tar.gz", torrent_folder)
 
   return path_to_url(main_file, torrent['downloadDir'], config.get('transmission', 'http_base'))
 

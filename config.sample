@@ -1,4 +1,2 @@
 [transmission]
-user = tobobo
-passwd = SECRET
 http_base = http://chips.whatbox.ca/private/

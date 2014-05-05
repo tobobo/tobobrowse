@@ -1,4 +1,4 @@
-from bottle import app, route, run, auth_basic
+from bottle import app, route, post, run, auth_basic, request, response, hook
 from transmission import *
 import json
 import ConfigParser
@@ -20,6 +20,23 @@ class StripPathMiddleware(object):
   def __call__(self, e, h):
     e['PATH_INFO'] = e['PATH_INFO'].rstrip('/')
     return self.app(e,h)
+
+class EnableCors(object):
+  name = 'enable_cors'
+  api = 2
+
+  def apply(self, fn, context):
+    def _enable_cors(*args, **kwargs):
+      # set CORS headers
+      response.headers['Access-Control-Allow-Origin'] = '*'
+      response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
+      response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+
+      if bottle.request.method != 'OPTIONS':
+        # actual request; reply with the actual response
+        return fn(*args, **kwargs)
+
+    return _enable_cors
 
 def make_tarfile(output_filename, source_dir):
   if not path.isfile(output_filename):
@@ -102,6 +119,12 @@ def serve():
   def torrents():
     return json.dumps({'torrents': transmission().get_torrent_list([])})
 
+  @post('/torrents')
+  @auth_basic(user_auth)
+  def add_torrent():
+    add_torrent(request.forms['torrent']['url'])
+    return json.dumps({'meta': 'success'})
+
   @route('/torrents/<name>')
   @auth_basic(user_auth)
   def get_torrent_with_file(name):
@@ -113,6 +136,7 @@ def serve():
 
   tobobrowse = app()
   tobobrowse = StripPathMiddleware(tobobrowse)
+  tobobrowse.install(EnableCors())
   run(host='chips.whatbox.ca', port=8000, app=tobobrowse)
 
 if __name__ == '__main__':

@@ -62,6 +62,15 @@ def get_file(torrent):
     'can_download': can_download
   }
 
+def get_file_and_add_details(torrent):
+  main_file = get_file(torrent)
+  torrent['downloadUrl'] = main_file['url']
+  torrent['numFiles'] = main_file['num_files']
+  torrent['downloadSize'] = main_file['size']
+  torrent['canDownload'] = main_file['can_download']
+
+  return torrent
+
 def user_auth(user, passwd):
   if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'passwd'):
     return True
@@ -92,12 +101,7 @@ def serve():
   def get_torrent_with_file(name):
     torrent = get_torrent_by_name(name)
     if torrent:
-      main_file = get_file(torrent)
-      torrent['downloadUrl'] = main_file['url']
-      torrent['numFiles'] = main_file['num_files']
-      torrent['downloadSize'] = main_file['size']
-      torrent['canDownload'] = main_file['can_download']
-      return json.dumps({'torrent': torrent})
+      return json.dumps({'torrent': get_file_and_add_details(torrent)})
     else:
       return json.dumps({'meta': 'Torrent not found'})
 

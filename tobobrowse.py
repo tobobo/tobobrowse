@@ -80,9 +80,11 @@ def serve():
   transmission_passwd = ''
 
   def transmission():
+    print 'transmission deets', transmission_user, transmission_passwd
     return Transmission(transmission_host, transmission_port, '/transmission/rpc', transmission_user, transmission_passwd)
   
   def user_auth(user, passwd):
+    print 'user auth', user, passwd
     transmission_request = requests.get('http://%s:%d' % (transmission_host, transmission_port), auth=(user, passwd), timeout=0.5)
     if transmission_request.status_code == 200:
       transmission_user = user

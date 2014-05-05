@@ -43,7 +43,7 @@ def get_file_url(torrent):
   print 'largest file name', largest_file_name
   if path.samefile(torrent_folder, largest_file):
     main_file = largest_file
-  elif re.match(r'(.mp4|.avi|.3gp|.mkv)$', largest_file_name):
+  elif largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv')):
     main_file = largest_file
   else:
     print 'going to tar'

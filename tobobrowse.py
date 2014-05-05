@@ -84,12 +84,15 @@ def serve():
     return Transmission(transmission_host, transmission_port, '/transmission/rpc', transmission_user, transmission_passwd)
   
   def user_auth(user, passwd):
+    nonlocal transmission_user
+    nonlocal transmission_passwd
+    
     print 'user auth', user, passwd
     transmission_request = requests.get('http://%s:%d' % (transmission_host, transmission_port), auth=(user, passwd), timeout=0.5)
     print 'status code', transmission_request.status_code
     if transmission_request.status_code == 200:
-      nonlocal transmission_user = user
-      nonlocal transmission_passwd = passwd
+      transmission_user = user
+      transmission_passwd = passwd
       return True
     return False
 

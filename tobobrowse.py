@@ -6,6 +6,7 @@ from largestfile import largestfile
 from os import path
 import urllib
 import urlparse
+import tarfile
 
 config = ConfigParser.ConfigParser()
 
@@ -19,6 +20,32 @@ class StripPathMiddleware(object):
   def __call__(self, e, h):
     e['PATH_INFO'] = e['PATH_INFO'].rstrip('/')
     return self.app(e,h)
+
+def make_tarfile(output_filename, source_dir):
+  with tarfile.open(output_filename, "w:gz") as tar:
+    tar.add(source_dir, arcname=os.path.basename(source_dir))
+  return output_filename
+
+def torrent_folder_path(torrent):
+  return path.join(torrent['downloadDir'], torrent['name'])
+
+def path_to_url(path):
+  partial_path = path.split(torrent['downloadDir'])[-1]
+  quoted_partial_path = urllib.quote(partial_path)
+  return urlparse.urljoin(config.get('transmission', 'http_base'), quoted_partial_path)
+
+def get_file_url(torrent):
+  main_file_path = largestfile(torrent_folder_path(torrent))
+  return path_to_url(main_file_path)
+
+def get_torrent_by_name(name):
+  torrents = t.get_torrent_list([])
+  for torrent in torrents:
+    if torrent['name'] == name:
+      return torrent
+
+# def get_file_url(torrent):
+#   main_file_path
 
 def user_auth(user, passwd):
   if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'passwd'):
@@ -42,17 +69,11 @@ def serve():
   @route('/torrents/<name>')
   @auth_basic(user_auth)
   def get_key_file(name):
-    torrents = t.get_torrent_list([])
-    for torrent in torrents:
-      if torrent['name'] == name:
-        main_file_path = largestfile(path.join(torrent['downloadDir'], torrent['name']))[1]
-        partial_file_path = main_file_path.split(torrent['downloadDir'])[-1]
-        quoted_partial_path = urllib.quote(partial_file_path)
-        main_file_url = urlparse.urljoin(config.get('transmission', 'http_base'), quoted_partial_path)
-        torrent['downloadURL'] = main_file_url
-        return json.dumps({'torrent': torrent})
-
-    return json.dumps({'meta': 'Torrent not found'})
+    torrent = get_torrent_by_name(name)
+    if torrent:
+      return json.dumps({'torrent': torrent})
+    else
+      return json.dumps({'meta': 'Torrent not found'})
 
   tobobrowse = app()
   tobobrowse = StripPathMiddleware(tobobrowse)

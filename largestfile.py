@@ -22,7 +22,7 @@ def largestfile(this_path):
       except OSError:
         pass
 
-  return maxFile
+  return maxFile[1]
 
 if __name__ == '__main__':
   print largestfile('.')

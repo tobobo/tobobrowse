@@ -71,6 +71,7 @@ def serve():
   def get_key_file(name):
     torrent = get_torrent_by_name(name)
     if torrent:
+      torrent['downloadUrl'] = get_file_url(torrent)
       return json.dumps({'torrent': torrent})
     else:
       return json.dumps({'meta': 'Torrent not found'})

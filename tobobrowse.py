@@ -12,6 +12,7 @@ import requests
 config = ConfigParser.ConfigParser()
 
 if len(config.read('config')) < 1:
+  config.add_section('transmission')
   config.set('transmission', 'http_base', os.environ.get('TOBOBROWSE_HTTP_BASE'))
 
 class StripPathMiddleware(object):

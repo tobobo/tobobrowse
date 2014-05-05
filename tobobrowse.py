@@ -16,15 +16,11 @@ if len(config.read('config')) < 1:
   config.set('transmission', 'http_base', os.environ.get('TOBOBROWSE_HTTP_BASE'))
 
 class StripTrailingSlash(object):
-  name = 'strip_trailing_slash'
-  api = 2
-  
-  def apply(self, fn, context):
-    def _strip_trailing_slash(*args, **kwargs):
-      request.path = request.path.rstrip('/')
-      return fn(*args, **kwargs)
-
-    return _strip_trailing_slash
+  def __init__(self, app):
+    self.app = app 
+  def __call__(self, e, h):
+    e['PATH_INFO'] = e['PATH_INFO'].rstrip('/')
+    return self.app(e,h)
 
 class EnableCors(object):
   name = 'enable_cors'
@@ -141,7 +137,7 @@ def serve():
 
   tobobrowse = app()
   tobobrowse.install(EnableCors())
-  tobobrowse.install(StripTrailingSlash())
+  tobobrowse = StripTrailingSlash(tobobrowse)
   run(host='chips.whatbox.ca', port=8000, app=tobobrowse)
 
 if __name__ == '__main__':

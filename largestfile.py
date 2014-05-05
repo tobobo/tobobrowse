@@ -1,8 +1,7 @@
-from os import path, listdir
-from collections import deque
-import time
-
 def largestfile(this_path):
+  from os import path, listdir
+  from collections import deque
+
   total_size = 0
   largest_file_size = 0
   largest_file_path = ''

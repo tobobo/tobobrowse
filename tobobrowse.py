@@ -95,7 +95,7 @@ def serve():
       main_file = get_file(torrent)
       torrent['downloadUrl'] = main_file['url']
       torrent['numFiles'] = main_file['num_files']
-      torrent['downloadSize'] = main_file['total_size']
+      torrent['downloadSize'] = main_file['size']
       torrent['canDownload'] = main_file['can_download']
       return json.dumps({'torrent': torrent})
     else:

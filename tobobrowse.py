@@ -59,7 +59,7 @@ def get_file(torrent):
     'url': path_to_url(main_file, torrent['downloadDir'], config.get('transmission', 'http_base')),
     'num_files': largest_file['num_files'] + largest_file['num_directories'],
     'size': size, 
-    'can_download', can_download
+    'can_download': can_download
   }
 
 def user_auth(user, passwd):

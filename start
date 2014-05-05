@@ -5,4 +5,4 @@ if [ -n "$PID" ]; then
   kill $PID || echo "Server is not running."
 fi
 
-python index.py
+python daemon.py

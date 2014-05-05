@@ -1,5 +1,4 @@
 from bottle import app, route, run, auth_basic
-from daemonize import Daemonize
 from transmission import *
 import json
 import ConfigParser
@@ -33,10 +32,10 @@ def torrents():
   t = Transmission('localhost', 30446, '/transmission/rpc', config.get('transmission', 'user'), config.get('transmission', 'pass'))
   return json.dumps({'torrents': t.get_torrent_list([])})
 
-def main():
+def serve():
   tobobrowse = app()
   tobobrowse = StripPathMiddleware(tobobrowse)
   run(host='chips.whatbox.ca', port=8000, app=tobobrowse)
 
-daemon = Daemonize(app='tobobrowse', pid='/tmp/tobobrowse.pid', action=main)
-daemon.start()
+if __name__ == '__main__':
+  serve()

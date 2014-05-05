@@ -2,9 +2,10 @@ from bottle import app, route, run, auth_basic
 from transmission import *
 import json
 import ConfigParser
+from largestfile import largestfile
+from os import path
 
 config = ConfigParser.ConfigParser()
-
 
 if len(config.read('config')) < 1:
   print 'No config file.'
@@ -42,7 +43,8 @@ def serve():
     torrents = t.get_torrent_list([])
     for torrent in torrents:
       if torrent['name'] == name:
-        return json.dumps({'torrent': torrent})
+        keyfile = largestfile(path.join(torrent['downloadDir'], torrent['name']))
+        return json.dumps({'file': keyFile[1]})
 
   tobobrowse = app()
   tobobrowse = StripPathMiddleware(tobobrowse)

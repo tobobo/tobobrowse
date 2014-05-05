@@ -39,7 +39,7 @@ def serve():
   def torrents():
     return json.dumps({'torrents': t.get_torrent_list([])})
 
-  @route('/torrents/<name>/file')
+  @route('/torrents/<name>')
   @auth_basic(user_auth)
   def get_key_file(name):
     torrents = t.get_torrent_list([])
@@ -49,7 +49,8 @@ def serve():
         partial_file_path = main_file_path.split(torrent['downloadDir'])[-1]
         quoted_partial_path = urllib.quote(partial_file_path)
         main_file_url = urlparse.urljoin(config.get('transmission', 'http_base'), quoted_partial_path)
-        return json.dumps({'file': main_file_url})
+        torrent['downloadURL'] = main_file_url
+        return json.dumps({'torrent': torrent})
 
   tobobrowse = app()
   tobobrowse = StripPathMiddleware(tobobrowse)

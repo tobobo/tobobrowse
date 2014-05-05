@@ -56,6 +56,7 @@ def get_file(torrent):
     can_download = False
 
   return {
+    'path': main_file,
     'url': path_to_url(main_file, torrent['downloadDir'], config.get('transmission', 'http_base')),
     'num_files': largest_file['num_files'] + largest_file['num_directories'],
     'size': size, 

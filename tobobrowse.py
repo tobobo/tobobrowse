@@ -72,7 +72,7 @@ def serve():
     torrent = get_torrent_by_name(name)
     if torrent:
       return json.dumps({'torrent': torrent})
-    else
+    else:
       return json.dumps({'meta': 'Torrent not found'})
 
   tobobrowse = app()

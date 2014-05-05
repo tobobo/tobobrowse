@@ -77,14 +77,10 @@ def serve():
   transmission_config = {'host': 'localhost', 'port': 30446, 'user': '', 'passwd': ''}
 
   def transmission():
-    print 'transmission deets', transmission_config['user'], transmission_config['passwd']
     return Transmission(transmission_config['host'], transmission_config['port'], '/transmission/rpc', transmission_config['user'], transmission_config['passwd'])
   
   def user_auth(user, passwd):
-
-    print 'user auth', user, passwd
-    transmission_request = requests.get('http://%s:%d' % (transmission_config['host'], transmission_config['port']), auth=(user, passwd), timeout=0.5)
-    print 'status code', transmission_request.status_code
+    transmission_request = requests.get('http://%s:%d' % (transmission_config['host'], transmission_config['port']), auth=(user, passwd), timeout=0.05)
     if transmission_request.status_code == 200:
       transmission_config['user'] = user
       transmission_config['passwd'] = passwd

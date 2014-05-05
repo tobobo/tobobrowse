@@ -1,6 +1,7 @@
+from os import path, listdir
+from collections import deque
+
 def largestfile(this_path):
-  from os import path, listdir
-  from collections import deque
 
   total_size = 0
   largest_file_size = 0
@@ -20,7 +21,7 @@ def largestfile(this_path):
           size = path.getsize(file_path)
           total_size += size
           if size > largest_file_size:
-            largest_file_size, largest_file, path = size, file_path
+            largest_file_size, largest_file_path = size, file_path
       except OSError:
         pass
 

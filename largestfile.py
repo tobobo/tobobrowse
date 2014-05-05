@@ -30,7 +30,7 @@ def largestfile(this_path):
 
     num_directories += 1
 
-  return {'path': largest_file_path, 'size': largest_file_size, 'total_size': total_size, 'num_files': num_files, 'num_directories', num_directories}
+  return {'path': largest_file_path, 'size': largest_file_size, 'total_size': total_size, 'num_files': num_files, 'num_directories': num_directories}
 
 if __name__ == '__main__':
   print largestfile('.')

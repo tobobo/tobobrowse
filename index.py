@@ -1,5 +1,6 @@
 from bottle import route, run, auth_basic
 from daemonize import Daemonize
+from transmission import *
 
 def check(user, passwd):
   if user == 'tobobo':

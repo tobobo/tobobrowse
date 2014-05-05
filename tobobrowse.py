@@ -41,8 +41,8 @@ def serve():
   def get_key_file(name):
     torrents = t.get_torrent_list()
     for torrent in torrents:
-      if torrent.name == name
-      return json.dumps({'torrent': torrent})
+      if torrent.name == name:
+        return json.dumps({'torrent': torrent})
 
   tobobrowse = app()
   tobobrowse = StripPathMiddleware(tobobrowse)

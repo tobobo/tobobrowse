@@ -7,6 +7,7 @@ def check(user, passwd):
   return False
 
 @route('/')
+@auth_basic(check)
 def index():
   return 'hello, chumpo'
 

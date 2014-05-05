@@ -18,7 +18,7 @@ class StripPathMiddleware(object):
     return self.app(e,h)
 
 def check(user, passwd):
-  if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'pass':
+  if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'pass'):
     return True
   return False
 

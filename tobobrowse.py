@@ -5,6 +5,7 @@ import ConfigParser
 from largestfile import largestfile
 from os import path
 import urllib
+import urlparse
 
 config = ConfigParser.ConfigParser()
 
@@ -45,7 +46,8 @@ def serve():
     for torrent in torrents:
       if torrent['name'] == name:
         main_file_path = largestfile(path.join(torrent['downloadDir'], torrent['name']))[1]
-        main_file_url = urllib.quote(path.join(config.get('transmission', 'http_base'), main_file_path.split(torrent['downloadDir'])[-1]))
+        partial_file_path = main_file_path.split(torrent['downloadDir'])[-1]
+        main_file_url = urlparse.urljoin(config.get('transmission', 'http_base'), partial_file_path)
         return json.dumps({'file': main_file_url})
 
   tobobrowse = app()

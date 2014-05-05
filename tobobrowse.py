@@ -137,7 +137,7 @@ def serve():
 
   tobobrowse = app()
   tobobrowse.install(EnableCors())
-  tobobrowse = StripPathMiddleware(tobobrowse)
+  tobobrowse.install(StripPathMiddleware())
   run(host='chips.whatbox.ca', port=8000, app=tobobrowse)
 
 if __name__ == '__main__':

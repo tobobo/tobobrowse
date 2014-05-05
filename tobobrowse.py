@@ -34,12 +34,14 @@ def path_to_url(path, file_base, url_base):
 def torrent_folder_path(torrent):
   return path.join(torrent['downloadDir'], torrent['name'])
 
-def get_file_url(torrent):
-  main_file_path = largestfile(torrent_folder_path(torrent))
-  return path_to_url(main_file_path, torrent['downloadDir'], config.get('transmission', 'http_base'))
-
 # def get_file_url(torrent):
-#   main_file_path
+#   main_file_path = largestfile(torrent_folder_path(torrent))
+#   return path_to_url(main_file_path, torrent['downloadDir'], config.get('transmission', 'http_base'))
+
+def get_file_url(torrent):
+  torrent_folder = torrent_folder_path(torrent)
+  torrent_tar = make_tarfile(torrent_folder + ".tar.gz", torrent_folder)
+  return torrent_tar
 
 def user_auth(user, passwd):
   if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'passwd'):
@@ -68,7 +70,7 @@ def serve():
 
   @route('/torrents/<name>')
   @auth_basic(user_auth)
-  def get_key_file(name):
+  def get_torrent_with_file(name):
     torrent = get_torrent_by_name(name)
     if torrent:
       torrent['downloadUrl'] = get_file_url(torrent)

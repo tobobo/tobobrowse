@@ -22,8 +22,9 @@ class StripPathMiddleware(object):
     return self.app(e,h)
 
 def make_tarfile(output_filename, source_dir):
-  with tarfile.open(output_filename, "w:gz") as tar:
-    tar.add(source_dir, arcname=os.path.basename(source_dir))
+  if not path.isfile(output_filename):
+    with tarfile.open(output_filename, "w:gz") as tar:
+      tar.add(source_dir, arcname=os.path.basename(source_dir))
   return output_filename
 
 def path_to_url(path, file_base, url_base):
@@ -41,7 +42,7 @@ def torrent_folder_path(torrent):
 def get_file_url(torrent):
   torrent_folder = torrent_folder_path(torrent)
   torrent_tar = make_tarfile(torrent_folder + ".tar.gz", torrent_folder)
-  return torrent_tar
+  return path_to_url(torrent_tar, torrent['downloadDir'], config.get('transmission', 'http_base'))
 
 def user_auth(user, passwd):
   if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'passwd'):

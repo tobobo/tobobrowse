@@ -52,6 +52,8 @@ def serve():
         torrent['downloadURL'] = main_file_url
         return json.dumps({'torrent': torrent})
 
+    return json.dumps({'meta': 'Torrent not found'})
+
   tobobrowse = app()
   tobobrowse = StripPathMiddleware(tobobrowse)
   run(host='chips.whatbox.ca', port=8000, app=tobobrowse)

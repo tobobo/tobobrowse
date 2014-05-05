@@ -39,7 +39,7 @@ def serve():
   @route('/torrents/<name>/file')
   @auth_basic(user_auth)
   def get_key_file(name):
-    torrents = t.get_torrent_list()
+    torrents = t.get_torrent_list([])
     for torrent in torrents:
       if torrent.name == name:
         return json.dumps({'torrent': torrent})

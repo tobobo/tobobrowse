@@ -2,7 +2,7 @@
 
 PID=$(cat /tmp/tobobrowse.pid)
 if [ -n "$PID" ]; then
-  kill $PID
+  kill $PID || echo "Server is not running."
 fi
 
 python index.py

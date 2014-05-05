@@ -12,7 +12,7 @@ import requests
 config = ConfigParser.ConfigParser()
 
 if len(config.read('config')) < 1:
-  config.set('transmission', 'http_base', os.environ['TOBOBROWSE_HTTP_BASE'])
+  config.set('transmission', 'http_base', os.environ.get('TOBOBROWSE_HTTP_BASE'))
 
 class StripPathMiddleware(object):
   def __init__(self, app):
@@ -32,7 +32,7 @@ class EnableCors(object):
       response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
       response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
 
-      if bottle.request.method != 'OPTIONS':
+      if request.method != 'OPTIONS':
         # actual request; reply with the actual response
         return fn(*args, **kwargs)
 

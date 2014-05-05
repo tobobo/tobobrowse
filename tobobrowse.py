@@ -42,7 +42,7 @@ def get_file(torrent):
   largest_file_path = largest_file['path']
   largest_file_name = path.basename(largest_file_path)
   size = largest_file['total_size']
-  can_download = true
+  can_download = True
 
   if path.samefile(torrent_folder, largest_file_path):
     main_file = largest_file_path
@@ -53,7 +53,7 @@ def get_file(torrent):
     size = path.getsize(main_file)
   else:
     main_file = largest_file_path
-    can_download = false
+    can_download = False
 
   return {
     'url': path_to_url(main_file, torrent['downloadDir'], config.get('transmission', 'http_base')),

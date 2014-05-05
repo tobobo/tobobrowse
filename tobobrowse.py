@@ -39,8 +39,8 @@ def torrent_folder_path(torrent):
 def get_file_url(torrent):
   torrent_folder = torrent_folder_path(torrent)
   largest_file = largestfile(torrent_folder)
-  largest_file_name = path.basename(largest_file_path)
-  if path.samefile(torrent_folder, largest_file_path):
+  largest_file_name = path.basename(largest_file)
+  if path.samefile(torrent_folder, largest_file):
     main_file = largest_file
   elif re.match(r'(\.mp4|\.avi|\.3gp|\.mkv)$', largest_file_name):
     main_file = largest_file

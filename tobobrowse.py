@@ -136,8 +136,8 @@ def serve():
       return json.dumps({'meta': 'Torrent not found'})
 
   tobobrowse = app()
-  tobobrowse = StripPathMiddleware(tobobrowse)
   tobobrowse.install(EnableCors())
+  tobobrowse = StripPathMiddleware(tobobrowse)
   run(host='chips.whatbox.ca', port=8000, app=tobobrowse)
 
 if __name__ == '__main__':

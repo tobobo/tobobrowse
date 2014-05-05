@@ -44,7 +44,7 @@ def get_file_url(torrent):
     main_file = largest_file
   elif re.match(r'(\.mp4|\.avi|\.3gp|\.mkv)$', largest_file_name):
     main_file = largest_file
-  else
+  else:
     print 'going to tar'
     main_file = largest_file
     # main_file = make_tarfile(torrent_folder + ".tar.gz", torrent_folder)

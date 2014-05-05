@@ -86,6 +86,7 @@ def serve():
   def user_auth(user, passwd):
     print 'user auth', user, passwd
     transmission_request = requests.get('http://%s:%d' % (transmission_host, transmission_port), auth=(user, passwd), timeout=0.5)
+    print 'status code', transmission_request.status_code
     if transmission_request.status_code == 200:
       transmission_user = user
       transmission_passwd = passwd

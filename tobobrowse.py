@@ -17,32 +17,32 @@ class StripPathMiddleware(object):
     e['PATH_INFO'] = e['PATH_INFO'].rstrip('/')
     return self.app(e,h)
 
-
-
+def user_auth(user, pass):
+  if user == config.get('transmission', 'user') and pass == config.get('transmission', 'pass'):
+    return True
+  return False
 
 def serve():
 
   t = Transmission('localhost', 30446, '/transmission/rpc', config.get('transmission', 'user'), config.get('transmission', 'pass'))
-  
-  def check(user, passwd):
-    if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'pass'):
-      return True
-    return False
 
   @route('/')
-  @auth_basic(check)
+  @auth_basic(user_auth)
   def index():
     return 'hello, friend!'
 
   @route('/torrents')
-  @auth_basic(check)
+  @auth_basic(user_auth)
   def torrents():
     return json.dumps({'torrents': t.get_torrent_list([])})
 
-  @route('/torrents/<name>')
-  @auth_basic(check)
-  def torrent(name):
-    return name
+  @route('/torrents/<name>/file')
+  @auth_basic(user_auth)
+  def get_key_file(name):
+    torrents = t.get_torrent_list()
+    for torrent in torrents:
+      if torrent.name == name
+      return json.dumps({'torrent': torrent})
 
   tobobrowse = app()
   tobobrowse = StripPathMiddleware(tobobrowse)

@@ -17,7 +17,7 @@ if len(config.read('config')) < 1:
 
 class StripPathMiddleware(object):
   def __init__(self, app):
-    self.app = app
+    self.app = app 
   def __call__(self, e, h):
     e['PATH_INFO'] = e['PATH_INFO'].rstrip('/')
     return self.app(e,h)
@@ -40,7 +40,7 @@ def get_file_url(torrent):
   torrent_folder = torrent_folder_path(torrent)
   largest_file = largestfile(torrent_folder)
   largest_file_path = largest_file['path']
-  largest_file_name = path.basename(largest_file)
+  largest_file_name = path.basename(largest_file_path)
 
   if path.samefile(torrent_folder, largest_file_path):
     main_file = largest_file_path

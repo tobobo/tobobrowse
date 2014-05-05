@@ -36,20 +36,31 @@ def path_to_url(path, file_base, url_base):
 def torrent_folder_path(torrent):
   return path.join(torrent['downloadDir'], torrent['name'])
 
-def get_file_url(torrent):
+def get_file(torrent):
   torrent_folder = torrent_folder_path(torrent)
   largest_file = largestfile(torrent_folder)
   largest_file_path = largest_file['path']
   largest_file_name = path.basename(largest_file_path)
+  size = largest_file['total_size']
+  can_download = true
 
   if path.samefile(torrent_folder, largest_file_path):
     main_file = largest_file_path
   elif largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv')):
     main_file = largest_file_path
-  else:
+  elif size < 1073741824: # 1 GB
     main_file = make_tarfile(torrent_folder + ".tar.gz", torrent_folder)
+    size = path.getsize(main_file)
+  else:
+    main_file = largest_file_path
+    can_download = false
 
-  return path_to_url(main_file, torrent['downloadDir'], config.get('transmission', 'http_base'))
+  return {
+    'url': path_to_url(main_file, torrent['downloadDir'], config.get('transmission', 'http_base')),
+    'num_files': largest_file['num_files'] + largest_file['num_directories'],
+    'size': size, 
+    'can_download', can_download
+  }
 
 def user_auth(user, passwd):
   if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'passwd'):
@@ -81,7 +92,11 @@ def serve():
   def get_torrent_with_file(name):
     torrent = get_torrent_by_name(name)
     if torrent:
-      torrent['downloadUrl'] = get_file_url(torrent)
+      main_file = get_file(torrent)
+      torrent['downloadUrl'] = main_file['url']
+      torrent['numFiles'] = main_file['num_files']
+      torrent['downloadSize'] = main_file['total_size']
+      torrent['canDownload'] = main_file['can_download']
       return json.dumps({'torrent': torrent})
     else:
       return json.dumps({'meta': 'Torrent not found'})

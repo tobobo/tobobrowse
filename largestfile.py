@@ -6,6 +6,8 @@ def largestfile(this_path):
   total_size = 0
   largest_file_size = 0
   largest_file_path = ''
+  num_files = 0
+  num_directories = 0
 
   directories = deque([this_path])
 
@@ -22,10 +24,13 @@ def largestfile(this_path):
           total_size += size
           if size > largest_file_size:
             largest_file_size, largest_file_path = size, file_path
+          num_files += 1
       except OSError:
         pass
 
-  return {'path': largest_file_path, 'size': largest_file_size, 'total_size': total_size}
+    num_directories += 1
+
+  return {'path': largest_file_path, 'size': largest_file_size, 'total_size': total_size, 'num_files': num_files, 'num_directories', num_directories}
 
 if __name__ == '__main__':
   print largestfile('.')

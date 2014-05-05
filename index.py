@@ -11,6 +11,12 @@ def check(user, passwd):
 def index():
   return 'hello, friend!'
 
+@route('/torrents')
+@auth_basic(check)
+def torrents():
+  t = Transmission('localhost', 30446, '/transmission/rpc', 'tobobo')
+  return t.get_torrent_list([])
+
 def main():
   run(host='chips.whatbox.ca', port=8000)
 

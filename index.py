@@ -27,7 +27,7 @@ def torrents():
   return json.dumps({'torrents': t.get_torrent_list([])})
 
 def main():
-  tobobrowse = bottle.app()
+  tobobrowse = app()
   tobobrowse = StripPathMiddleware(tobobrowse)
   run(host='chips.whatbox.ca', port=8000, app=tobobrowse)
 

@@ -17,14 +17,14 @@ class StripPathMiddleware(object):
     e['PATH_INFO'] = e['PATH_INFO'].rstrip('/')
     return self.app(e,h)
 
-def user_auth(user, pass):
-  if user == config.get('transmission', 'user') and pass == config.get('transmission', 'pass'):
+def user_auth(user, passwd):
+  if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'passwd'):
     return True
   return False
 
 def serve():
 
-  t = Transmission('localhost', 30446, '/transmission/rpc', config.get('transmission', 'user'), config.get('transmission', 'pass'))
+  t = Transmission('localhost', 30446, '/transmission/rpc', config.get('transmission', 'user'), config.get('transmission', 'passwd'))
 
   @route('/')
   @auth_basic(user_auth)

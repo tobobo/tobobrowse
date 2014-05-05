@@ -26,17 +26,17 @@ def make_tarfile(output_filename, source_dir):
     tar.add(source_dir, arcname=os.path.basename(source_dir))
   return output_filename
 
+def path_to_url(path, file_base, url_base):
+  partial_path = path.split(file_base)[-1]
+  quoted_partial_path = urllib.quote(partial_path)
+  return urlparse.urljoin(url_base, quoted_partial_path)
+
 def torrent_folder_path(torrent):
   return path.join(torrent['downloadDir'], torrent['name'])
 
-def path_to_url(path):
-  partial_path = path.split(torrent['downloadDir'])[-1]
-  quoted_partial_path = urllib.quote(partial_path)
-  return urlparse.urljoin(config.get('transmission', 'http_base'), quoted_partial_path)
-
 def get_file_url(torrent):
   main_file_path = largestfile(torrent_folder_path(torrent))
-  return path_to_url(main_file_path)
+  return path_to_url(main_file_path, torrent['downloadDir'], config.get('transmission', 'http_base'))
 
 # def get_file_url(torrent):
 #   main_file_path

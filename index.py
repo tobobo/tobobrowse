@@ -18,7 +18,7 @@ class StripPathMiddleware(object):
     return self.app(e,h)
 
 def check(user, passwd):
-  if user == 'tobobo':
+  if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'pass':
     return True
   return False
 
@@ -30,7 +30,7 @@ def index():
 @route('/torrents')
 @auth_basic(check)
 def torrents():
-  t = Transmission('localhost', 30446, '/transmission/rpc', config.get('transmission', 'username'), config.get('transmission', 'password'))
+  t = Transmission('localhost', 30446, '/transmission/rpc', config.get('transmission', 'user'), config.get('transmission', 'pass'))
   return json.dumps({'torrents': t.get_torrent_list([])})
 
 def main():

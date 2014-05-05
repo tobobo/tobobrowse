@@ -38,12 +38,6 @@ def get_file_url(torrent):
   main_file_path = largestfile(torrent_folder_path(torrent))
   return path_to_url(main_file_path)
 
-def get_torrent_by_name(name):
-  torrents = t.get_torrent_list([])
-  for torrent in torrents:
-    if torrent['name'] == name:
-      return torrent
-
 # def get_file_url(torrent):
 #   main_file_path
 
@@ -55,6 +49,12 @@ def user_auth(user, passwd):
 def serve():
 
   t = Transmission('localhost', 30446, '/transmission/rpc', config.get('transmission', 'user'), config.get('transmission', 'passwd'))
+
+  def get_torrent_by_name(name):
+    torrents = t.get_torrent_list([])
+    for torrent in torrents:
+      if torrent['name'] == name:
+        return torrent
 
   @route('/')
   @auth_basic(user_auth)

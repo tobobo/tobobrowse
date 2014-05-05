@@ -7,7 +7,7 @@ from os import path
 import urllib
 import urlparse
 import tarfile
-import re
+import requests
 
 config = ConfigParser.ConfigParser()
 
@@ -72,17 +72,26 @@ def get_file_and_add_details(torrent):
 
   return torrent
 
-def user_auth(user, passwd):
-  if user == config.get('transmission', 'user') and passwd == config.get('transmission', 'passwd'):
-    return True
-  return False
-
 def serve():
 
-  t = Transmission('localhost', 30446, '/transmission/rpc', config.get('transmission', 'user'), config.get('transmission', 'passwd'))
+  transmission_host = 'localhost'
+  transmission_port = 30446
+  transmission_user = ''
+  transmission_passwd = ''
+
+  def transmission():
+    return Transmission(transmission_host, transmission_port, '/transmission/rpc', transmission_user, transmission_passwd)
+  
+  def user_auth(user, passwd):
+    transmission_request = requests.get('http://' + transmission_host + ':' + transmission_port, auth=(user, passwd), timeout=0.5)
+    if r.status_code == 200
+      transmission_user = user
+      transmission_passwd = passwd
+      return True
+    return False
 
   def get_torrent_by_name(name):
-    torrents = t.get_torrent_list([])
+    torrents = transmission().get_torrent_list([])
     for torrent in torrents:
       if torrent['name'] == name:
         return torrent
@@ -95,7 +104,7 @@ def serve():
   @route('/torrents')
   @auth_basic(user_auth)
   def torrents():
-    return json.dumps({'torrents': t.get_torrent_list([])})
+    return json.dumps({'torrents': transmission().get_torrent_list([])})
 
   @route('/torrents/<name>')
   @auth_basic(user_auth)

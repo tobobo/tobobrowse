@@ -31,7 +31,7 @@ def index():
 @auth_basic(check)
 def torrents():
   t = Transmission('localhost', 30446, '/transmission/rpc', config.get('transmission', 'user'), config.get('transmission', 'pass'))
-  return json.dumps({'torrents': t.get_torrents([])})
+  return json.dumps({'torrent', t.get_torrent_by_id(1), 'torrents': t.get_torrent_list([])})
 
 def main():
   tobobrowse = app()

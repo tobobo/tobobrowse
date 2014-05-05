@@ -8,7 +8,7 @@ def check(user, passwd):
 
 @route('/')
 def index():
-  return 'hello, chump'
+  return 'hello, chumpo'
 
 def main():
   run(host='chips.whatbox.ca', port=8000)

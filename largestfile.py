@@ -3,7 +3,7 @@ from collections import deque
 
 def largestfile(this_path):
 
-  if path.isdir(this_path):
+  if not path.isdir(this_path):
     total_size = path.getsize(this_path)
     largest_file_size = total_size
     largest_file_path = this_path

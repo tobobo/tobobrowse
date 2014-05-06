@@ -105,7 +105,7 @@ def serve():
 
   transmission_config = {
     'host': config.get('transmission', 'host'), 
-    'port': config.get('transmission', 'port'), 
+    'port': int(config.get('transmission', 'port')), 
     'user': '', 'passwd': ''
   }
 

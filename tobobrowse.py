@@ -34,11 +34,13 @@ class EnableCors(object):
 
   def apply(self, fn, context):
     def _enable_cors(*args, **kwargs):
-      response.headers['Access-Control-Allow-Origin'] = '*'
-      (response.headers['Access-Control-Allow-Methods'] = 
-        'GET, POST, PUT, OPTIONS')
-      (response.headers['Access-Control-Allow-Headers'] = 
-        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token')
+      for header, value in {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+        'Access-Control-Allow-Headers':
+          'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+      }.iteritems():
+        response.headers[header] = value
 
       if request.method != 'OPTIONS':
         return fn(*args, **kwargs)

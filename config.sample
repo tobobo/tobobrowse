@@ -1,2 +1,5 @@
 [transmission]
 http_base = http://chips.whatbox.ca/private/
+host = localhost
+port = 30446
+timeout = 0.05

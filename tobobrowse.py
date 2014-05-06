@@ -13,7 +13,13 @@ config = ConfigParser.ConfigParser()
 
 if len(config.read('config')) < 1:
   config.add_section('transmission')
-  config.set('transmission', 'http_base', os.environ.get('TOBOBROWSE_HTTP_BASE'))
+  config.set(
+    'transmission', 'http_base', 
+    os.environ.get('TOBOBROWSE_HTTP_BASE')
+  )
+  config.set('transmission', 'host', os.environ.get('TOBOBROWSE_HOST'))
+  config.set('transmission', 'port', os.environ.get('TOBOBROWSE_PORT'))
+  config.set('transmission', 'timeout', os.environ.get('TOBOBROWSE_TIMEOUT'))
 
 class StripTrailingSlash(object):
   def __init__(self, app):
@@ -30,8 +36,10 @@ class EnableCors(object):
     def _enable_cors(*args, **kwargs):
       # set CORS headers
       response.headers['Access-Control-Allow-Origin'] = '*'
-      response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, OPTIONS'
-      response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+      response.headers['Access-Control-Allow-Methods'] = 
+        'GET, POST, PUT, OPTIONS'
+      response.headers['Access-Control-Allow-Headers'] = 
+        'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
 
       if request.method != 'OPTIONS':
         # actual request; reply with the actual response
@@ -74,7 +82,11 @@ def get_file(torrent):
 
   return {
     'path': main_file,
-    'url': path_to_url(main_file, torrent['downloadDir'], config.get('transmission', 'http_base')),
+    'url': path_to_url(
+      main_file, 
+      torrent['downloadDir'], 
+      config.get('transmission', 'http_base')
+    ),
     'num_files': largest_file['num_files'] + largest_file['num_directories'],
     'size': size, 
     'can_download': can_download
@@ -91,13 +103,28 @@ def get_file_and_add_details(torrent):
 
 def serve():
 
-  transmission_config = {'host': 'localhost', 'port': 30446, 'user': '', 'passwd': ''}
+  transmission_config = {
+    'host': config.get('transmission', 'host'), 
+    'port': config.get('transmission', 'port'), 
+    'user': '', 'passwd': ''
+  }
 
   def transmission():
-    return Transmission(transmission_config['host'], transmission_config['port'], '/transmission/rpc', transmission_config['user'], transmission_config['passwd'])
+    return Transmission(
+      transmission_config['host'], 
+      transmission_config['port'], 
+      '/transmission/rpc', 
+      transmission_config['user'], 
+      transmission_config['passwd']
+    )
   
   def user_auth(user, passwd):
-    transmission_request = requests.get('http://%s:%d' % (transmission_config['host'], transmission_config['port']), auth=(user, passwd), timeout=0.05)
+    transmission_request = requests.get(
+      'http://%s:%d' % (transmission_config['host'],
+      transmission_config['port']), 
+      auth=(user, passwd), 
+      timeout=config.get('transmission', 'timeout')
+    )
     if transmission_request.status_code == 200:
       transmission_config['user'] = user
       transmission_config['passwd'] = passwd

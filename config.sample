@@ -3,3 +3,7 @@ http_base = http://chips.whatbox.ca/private/
 host = localhost
 port = 30446
 timeout = 0.05
+
+[server]
+host = localhost
+port = 8000

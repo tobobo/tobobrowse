@@ -106,6 +106,7 @@ def serve():
   transmission_config = {
     'host': config.get('transmission', 'host'), 
     'port': int(config.get('transmission', 'port')), 
+    'timeout', float(config.get('transmission', 'timeout'))
     'user': '', 'passwd': ''
   }
 
@@ -123,7 +124,7 @@ def serve():
       'http://%s:%d' % (transmission_config['host'],
       transmission_config['port']), 
       auth=(user, passwd), 
-      timeout=config.get('transmission', 'timeout')
+      timeout=transmission_config['timeout']
     )
     if transmission_request.status_code == 200:
       transmission_config['user'] = user
@@ -165,7 +166,12 @@ def serve():
   tobobrowse = app()
   tobobrowse.install(EnableCors())
   tobobrowse = StripTrailingSlash(tobobrowse)
-  run(host='chips.whatbox.ca', port=8000, app=tobobrowse)
+
+  run(
+    host=config.get('server', 'host'), 
+    port=config.get('server', 'port'), 
+    app=tobobrowse
+  )
 
 if __name__ == '__main__':
   serve()

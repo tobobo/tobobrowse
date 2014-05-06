@@ -152,7 +152,7 @@ def serve():
   @post('/torrents')
   @auth_basic(user_auth)
   def add_torrent():
-    print 'request forms', request.params.get('torrent')
+    print 'request forms', request.params.keys()
     transmission().add_torrent(request.forms.get('torrent','url'))
     return json.dumps({'meta': 'success'})
 

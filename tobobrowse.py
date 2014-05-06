@@ -154,7 +154,7 @@ def serve():
   def add_torrent():
     print 'request forms', request.params.get('torrent[url]')
     result = transmission().add_torrent(request.forms.get('torrent[url]'))
-    prints 'transmission result', result
+    print 'transmission result', result
     return json.dumps({'meta': 'success'})
 
   @route('/torrents/<name>')

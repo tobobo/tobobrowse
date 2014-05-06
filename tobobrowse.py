@@ -37,7 +37,6 @@ class EnableCors(object):
       for header, value in {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
-        'Access-Control-Allow-Credentials': 'True',
         'Access-Control-Allow-Headers':
           'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
       }.iteritems():

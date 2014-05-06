@@ -13,7 +13,11 @@ def largestfile(this_path):
 
   while len(directories) > 0:
     current_directory = directories.popleft()
-    contents = listdir(current_directory)
+    if path.isdir(current_directory):
+      contents = listdir(current_directory)
+      num_directories += 1
+    else:
+      contents = [current_directory]
     for this_file in contents:
       try:
         file_path = path.join(current_directory, this_file)
@@ -28,7 +32,6 @@ def largestfile(this_path):
       except OSError:
         pass
 
-    num_directories += 1
 
   return {'path': largest_file_path, 'size': largest_file_size, 'total_size': total_size, 'num_files': num_files, 'num_directories': num_directories}
 

@@ -9,7 +9,7 @@ def largestfile(this_path):
     largest_file_path = this_path
     num_files = 1
     num_directories = 0
-  else
+  else:
     total_size = 0
     largest_file_size = 0
     largest_file_path = ''

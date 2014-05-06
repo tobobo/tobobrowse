@@ -43,7 +43,7 @@ class EnableCors(object):
       }.iteritems():
         response.headers[header] = value
 
-      print 'response.headers', response.headers
+      print 'response.headers', response.headers['Access-Control-Allow-Origin']
 
       if request.method != 'OPTIONS':
         return fn(*args, **kwargs)

@@ -106,7 +106,7 @@ def serve():
   transmission_config = {
     'host': config.get('transmission', 'host'), 
     'port': int(config.get('transmission', 'port')), 
-    'timeout', float(config.get('transmission', 'timeout'))
+    'timeout': float(config.get('transmission', 'timeout'))
     'user': '', 'passwd': ''
   }
 

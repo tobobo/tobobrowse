@@ -33,6 +33,7 @@ class EnableCors(object):
   api = 2
 
   def apply(self, fn, context):
+    print 'enable cors?'
     def _enable_cors(*args, **kwargs):
       for header, value in {
         'Access-Control-Allow-Origin': '*',
@@ -41,6 +42,8 @@ class EnableCors(object):
           'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
       }.iteritems():
         response.headers[header] = value
+
+      print 'response.headers', response.headers
 
       if request.method != 'OPTIONS':
         return fn(*args, **kwargs)

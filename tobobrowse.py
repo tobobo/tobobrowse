@@ -176,7 +176,7 @@ def serve():
     else:
       return json.dumps({'meta': 'Torrent not found'})
 
-  @delete('/torrents/<name>', method=['OPTIONS', 'DELETE'])
+  @route('/torrents/<name>', method=['OPTIONS', 'DELETE'])
   @auth_basic(user_auth)
   def delete_torrent(name):
     torrent = get_torrent_by_name(name)

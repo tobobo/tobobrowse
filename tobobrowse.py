@@ -1,4 +1,12 @@
-from bottle import app, route, post, delete, run, auth_basic, request, response, hook
+from bottle import
+  app,
+  route,
+  post,
+  delete,
+  run,
+  auth_basic,
+  request,
+  response
 from transmission import *
 import json
 import ConfigParser
@@ -39,8 +47,14 @@ class EnableCors(object):
         'Access-Control-Allow-Origin': request.headers.get('Origin'),
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Credentials': 'true',
-        'Access-Control-Allow-Headers':
-          'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token, Access-Control-Request-Method'
+        'Access-Control-Allow-Headers': ', '.join([
+          'Origin',
+          'Accept',
+          'Content-Type',
+          'X-Requested-With',
+          'X-CSRF-Token',
+          'Access-Control-Request-Method'
+        ])
       }.iteritems():
         response.headers[header] = value
 
@@ -137,8 +151,10 @@ def serve():
 
   def user_auth(user, passwd):
     transmission_request = requests.get(
-      'http://%s:%d' % (transmission_config['host'],
-      transmission_config['port']),
+      'http://%s:%d' % (
+        transmission_config['host'],
+        transmission_config['port']
+      ),
       auth=(user, passwd),
       timeout=transmission_config['timeout']
     )

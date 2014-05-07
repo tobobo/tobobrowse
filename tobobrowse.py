@@ -1,9 +1,10 @@
-from bottle import app, route, post, run, auth_basic, request, response, hook
+from bottle import app, route, post, delete, run, auth_basic, request, response, hook
 from transmission import *
 import json
 import ConfigParser
 from largestfile import largestfile
-from os import path
+from os import path, remove
+import shutil
 import urllib
 import urlparse
 import tarfile
@@ -14,7 +15,7 @@ config = ConfigParser.ConfigParser()
 if len(config.read('config')) < 1:
   config.add_section('transmission')
   config.set(
-    'transmission', 'http_base', 
+    'transmission', 'http_base',
     os.environ.get('TOBOBROWSE_HTTP_BASE')
   )
   config.set('transmission', 'host', os.environ.get('TOBOBROWSE_HOST'))
@@ -23,7 +24,7 @@ if len(config.read('config')) < 1:
 
 class StripTrailingSlash(object):
   def __init__(self, app):
-    self.app = app 
+    self.app = app
   def __call__(self, e, h):
     e['PATH_INFO'] = e['PATH_INFO'].rstrip('/')
     return self.app(e,h)
@@ -59,11 +60,11 @@ def path_to_url(path, file_base, url_base):
   quoted_partial_path = urllib.quote(partial_path)
   return urlparse.urljoin(url_base, quoted_partial_path)
 
-def torrent_folder_path(torrent):
+def torrent_path(torrent):
   return path.join(torrent['downloadDir'], torrent['name'])
 
 def get_file(torrent):
-  torrent_folder = torrent_folder_path(torrent)
+  torrent_folder = torrent_path(torrent)
   largest_file = largestfile(torrent_folder)
   largest_file_path = largest_file['path']
   largest_file_name = path.basename(largest_file_path)
@@ -84,12 +85,12 @@ def get_file(torrent):
   return {
     'path': main_file,
     'url': path_to_url(
-      main_file, 
-      torrent['downloadDir'], 
+      main_file,
+      torrent['downloadDir'],
       config.get('transmission', 'http_base')
     ),
     'num_files': largest_file['num_files'] + largest_file['num_directories'],
-    'size': size, 
+    'size': size,
     'can_download': can_download
   }
 
@@ -102,29 +103,40 @@ def get_file_and_add_details(torrent):
 
   return torrent
 
+def remove_files(torrent):
+  this_path = torrent_path(torrent)
+  if path.isfile(this_path):
+    remove(this_path)
+  if path.isdir(this_path):
+    shutl.rmtree(path)
+  if path.isfile(this_path + ".tar.gz"):
+    remove(this_path)
+
+
+
 def serve():
 
   transmission_config = {
-    'host': config.get('transmission', 'host'), 
-    'port': int(config.get('transmission', 'port')), 
+    'host': config.get('transmission', 'host'),
+    'port': int(config.get('transmission', 'port')),
     'timeout': float(config.get('transmission', 'timeout')),
     'user': '', 'passwd': ''
   }
 
   def transmission():
     return Transmission(
-      transmission_config['host'], 
-      transmission_config['port'], 
-      '/transmission/rpc', 
-      transmission_config['user'], 
+      transmission_config['host'],
+      transmission_config['port'],
+      '/transmission/rpc',
+      transmission_config['user'],
       transmission_config['passwd']
     )
-  
+
   def user_auth(user, passwd):
     transmission_request = requests.get(
       'http://%s:%d' % (transmission_config['host'],
-      transmission_config['port']), 
-      auth=(user, passwd), 
+      transmission_config['port']),
+      auth=(user, passwd),
       timeout=transmission_config['timeout']
     )
     if transmission_request.status_code == 200:
@@ -164,13 +176,24 @@ def serve():
     else:
       return json.dumps({'meta': 'Torrent not found'})
 
+  @delete('/torrents/<name>')
+  @auth_basic(user_auth)
+  def delete_torrent(name):
+    torrent = get_torrent_by_name(name)
+    if torrent:
+      transmission().remove_torrent(torrent['id'])
+      remove_files(torrent)
+      return json.dumps({'meta': 'success'})
+    else:
+      return json.dumps({'meta': 'Torrent not found'})
+
   tobobrowse = app()
   tobobrowse.install(EnableCors())
   tobobrowse = StripTrailingSlash(tobobrowse)
 
   run(
-    host=config.get('server', 'host'), 
-    port=config.get('server', 'port'), 
+    host=config.get('server', 'host'),
+    port=config.get('server', 'port'),
     app=tobobrowse
   )
 

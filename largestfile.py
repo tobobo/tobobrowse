@@ -2,6 +2,7 @@ from os import path, listdir
 from collections import deque
 
 def largestfile(this_path):
+  special_files = []
 
   if not path.isdir(this_path):
     total_size = path.getsize(this_path)
@@ -17,7 +18,6 @@ def largestfile(this_path):
     num_directories = 0
 
     directories = deque([this_path])
-    special_files = []
     while len(directories) > 0:
       current_directory = directories.popleft()
       contents = listdir(current_directory)

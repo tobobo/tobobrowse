@@ -83,13 +83,14 @@ def get_file(torrent):
   can_download = True
   files = []
   multi_files = False
-  
-  if largest_file_size / size < 0.75:
+
+  is_video = largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv'))
+  if is_video and largest_file_size / size < 0.75:
     files = special_files
   else:
     if path.samefile(torrent_folder, largest_file_path):
       files.append(largest_file_path)
-    elif largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv')):
+    elif is_video:
       files.append(largest_file_path)
     elif size < 1073741824: # 1 GB
       files.append(make_tarfile(torrent_gz_path(torrent), torrent_folder))

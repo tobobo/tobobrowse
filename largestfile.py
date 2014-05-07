@@ -28,7 +28,7 @@ def largestfile(this_path):
           if path.isdir(file_path):
             directories.append(file_path)
           elif path.isfile(file_path):
-            if file_path.endswith(('mp4', 'avi', '3gp', 'mkv', 'mp3', 'aiff', 'wav', 'ogg', 'flac')):
+            if file_path.endswith(('mp4', 'avi', '3gp', 'mkv')):
               special_files.append(file_path)
             size = path.getsize(file_path)
             total_size += size

@@ -62,6 +62,9 @@ def path_to_url(path, file_base, url_base):
 def torrent_path(torrent):
   return path.join(torrent['downloadDir'], torrent['name'])
 
+def torrent_gz_path(torrent):
+  return torrent_path(torrent) + ".tar.gz"
+
 def get_file(torrent):
   torrent_folder = torrent_path(torrent)
   largest_file = largestfile(torrent_folder)
@@ -75,7 +78,7 @@ def get_file(torrent):
   elif largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv')):
     main_file = largest_file_path
   elif size < 1073741824: # 1 GB
-    main_file = make_tarfile(torrent_folder + ".tar.gz", torrent_folder)
+    main_file = make_tarfile(torrent_gz_path(torrent), torrent_folder)
     size = path.getsize(main_file)
   else:
     main_file = largest_file_path
@@ -108,8 +111,9 @@ def remove_files(torrent):
     remove(this_path)
   elif path.isdir(this_path):
     shutil.rmtree(this_path)
-  if path.isfile(path.join(this_path + ".tar.gz")):
-    remove(this_path)
+  gz_path = torrent_gz_path(torrent)
+  if path.isfile(gz_path):
+    remove(gz_path)
 
 
 

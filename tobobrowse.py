@@ -76,39 +76,46 @@ def get_file(torrent):
   torrent_folder = torrent_path(torrent)
   largest_file = largestfile(torrent_folder)
   largest_file_path = largest_file['path']
+  largest_file_size = path.getsize(largest_file['path'])
   largest_file_name = path.basename(largest_file_path)
   size = largest_file['total_size']
   can_download = True
-
+  files = []
   if path.samefile(torrent_folder, largest_file_path):
-    main_file = largest_file_path
+    files.push(largest_file_path)
   elif largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv')):
-    main_file = largest_file_path
+    files.push(largest_file_path)
   elif size < 1073741824: # 1 GB
-    main_file = make_tarfile(torrent_gz_path(torrent), torrent_folder)
+    files.push(make_tarfile(torrent_gz_path(torrent), torrent_folder))
     size = path.getsize(main_file)
   else:
-    main_file = largest_file_path
+    files.push(largest_file_path)
     can_download = False
 
+  def generate_file_obj(file_path):
+    return {
+      'path': file_path,
+      'name': path.basename(file_path),
+      'url': path_to_url(
+        file_path,
+        torrent['downloadDir'],
+        config.get('transmission', 'http_base')
+      )
+    }
+
   return {
-    'path': main_file,
-    'url': path_to_url(
-      main_file,
-      torrent['downloadDir'],
-      config.get('transmission', 'http_base')
-    ),
+    'files': map(generate_file_obj, files)
     'num_files': largest_file['num_files'] + largest_file['num_directories'],
     'size': size,
     'can_download': can_download
   }
 
 def get_file_and_add_details(torrent):
-  main_file = get_file(torrent)
-  torrent['downloadUrl'] = main_file['url']
-  torrent['numFiles'] = main_file['num_files']
-  torrent['downloadSize'] = main_file['size']
-  torrent['canDownload'] = main_file['can_download']
+  files = get_file(torrent)
+  torrent['files'] = files['files']
+  torrent['numFiles'] = files['num_files']
+  torrent['downloadSize'] = files['size']
+  torrent['canDownload'] = files['can_download']
 
   return torrent
 

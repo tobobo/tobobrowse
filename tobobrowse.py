@@ -35,12 +35,13 @@ class EnableCors(object):
 
   def apply(self, fn, context):
     def _enable_cors(*args, **kwargs):
+      print 'should be allowing delete'
       for header, value in {
         'Access-Control-Allow-Origin': request.headers.get('Origin'),
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Credentials': 'true',
         'Access-Control-Allow-Headers':
-          'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+          'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token, Access-Control-Request-Method'
       }.iteritems():
         response.headers[header] = value
 

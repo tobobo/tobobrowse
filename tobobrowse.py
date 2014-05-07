@@ -104,7 +104,7 @@ def get_file(torrent):
     }
 
   return {
-    'files': map(generate_file_obj, files)
+    'files': map(generate_file_obj, files),
     'num_files': largest_file['num_files'] + largest_file['num_directories'],
     'size': size,
     'can_download': can_download

@@ -17,7 +17,7 @@ def largestfile(this_path):
     num_directories = 0
 
     directories = deque([this_path])
-
+    special_files = []
     while len(directories) > 0:
       current_directory = directories.popleft()
       contents = listdir(current_directory)
@@ -28,6 +28,8 @@ def largestfile(this_path):
           if path.isdir(file_path):
             directories.append(file_path)
           elif path.isfile(file_path):
+            if file_path.endswith(('mp4', 'avi', '3gp', 'mkv', 'mp3', 'aiff', 'wav', 'ogg', 'flac')):
+              special_files.append(file_path)
             size = path.getsize(file_path)
             total_size += size
             if size > largest_file_size:
@@ -37,7 +39,7 @@ def largestfile(this_path):
           pass
 
 
-  return {'path': largest_file_path, 'size': largest_file_size, 'total_size': total_size, 'num_files': num_files, 'num_directories': num_directories}
+  return {'path': largest_file_path, 'size': largest_file_size, 'total_size': total_size, 'num_files': num_files, 'num_directories': num_directories, 'special_files': special_files}
 
 if __name__ == '__main__':
   print largestfile('.')

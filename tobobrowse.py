@@ -45,8 +45,7 @@ class EnableCors(object):
       }.iteritems():
         response.headers[header] = value
 
-      if request.method != 'OPTIONS':
-        return fn(*args, **kwargs)
+      return fn(*args, **kwargs)
 
     return _enable_cors
 

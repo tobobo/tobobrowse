@@ -107,7 +107,7 @@ def remove_files(torrent):
   if path.isfile(this_path):
     remove(this_path)
   if path.isdir(this_path):
-    shutil.rmtree(path)
+    shutil.rmtree(this_path)
   if path.isfile(this_path + ".tar.gz"):
     remove(this_path)
 

@@ -1,11 +1,5 @@
-from bottle import app,
-                   route,
-                   post,
-                   delete,
-                   run,
-                   auth_basic,
-                   request,
-                   response
+from bottle import \
+  app, route, post, delete, run, auth_basic, request, response
 from transmission import *
 import json
 import ConfigParser

@@ -93,8 +93,9 @@ def get_file(torrent):
     elif is_video:
       files.append(largest_file_path)
     elif size < 1073741824: # 1 GB
-      files.append(make_tarfile(torrent_gz_path(torrent), torrent_folder))
-      size = path.getsize(main_file)
+      tarfile = make_tarfile(torrent_gz_path(torrent), torrent_folder)
+      files.append(tarfile)
+      size = path.getsize(tarfile)
     else:
       files.append(largest_file_path)
       can_download = False

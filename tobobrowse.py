@@ -35,7 +35,6 @@ class EnableCors(object):
 
   def apply(self, fn, context):
     def _enable_cors(*args, **kwargs):
-      print 'should be allowing delete'
       for header, value in {
         'Access-Control-Allow-Origin': request.headers.get('Origin'),
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -108,7 +107,7 @@ def remove_files(torrent):
   if path.isfile(this_path):
     remove(this_path)
   if path.isdir(this_path):
-    shutl.rmtree(path)
+    shutil.rmtree(path)
   if path.isfile(this_path + ".tar.gz"):
     remove(this_path)
 

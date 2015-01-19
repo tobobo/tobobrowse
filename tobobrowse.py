@@ -38,7 +38,7 @@ class EnableCors(object):
   def apply(self, fn, context):
     def _enable_cors(*args, **kwargs):
       for header, value in {
-        'Access-Control-Allow-Origin': request.headers.get('Origin'),
+        'Access-Control-Allow-Origin': Request.headers.get('Origin'),
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Credentials': 'true',
         'Access-Control-Allow-Headers': ', '.join([
@@ -204,7 +204,7 @@ def serve():
     else:
       return json.dumps({'meta': 'Torrent not found'})
 
-  @route('/torrents/<name>', method=['OPTIONS', 'DELETE'])
+  @route('/torrents/<name>', method=['DELETE'])
   @auth_basic(user_auth)
   def delete_torrent(name):
     torrent = get_torrent_by_name(name)

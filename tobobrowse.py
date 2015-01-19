@@ -22,6 +22,7 @@ if len(config.read('config')) < 1:
   config.set('transmission', 'host', os.environ.get('TOBOBROWSE_HOST'))
   config.set('transmission', 'port', os.environ.get('TOBOBROWSE_PORT'))
   config.set('transmission', 'timeout', os.environ.get('TOBOBROWSE_TIMEOUT'))
+  config.set('server', 'port', os.environ.get('PORT'))
 
 class StripTrailingSlash(object):
   def __init__(self, app):
@@ -217,9 +218,8 @@ def serve():
   tobobrowse = app()
   tobobrowse.install(EnableCors())
   tobobrowse = StripTrailingSlash(tobobrowse)
-
   run(
-    host=config.get('server', 'host'),
+    host='0.0.0.0',
     port=config.get('server', 'port'),
     app=tobobrowse
   )

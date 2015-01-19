@@ -1,8 +1,7 @@
 #!/bin/bash
 
-PID=$(cat /tmp/tobobrowse.pid)
+PID=$(cat /tmp/tobobrowse.pid || echo '')
 if [ -n "$PID" ]; then
-  kill $PID || echo "Server is not running."
+  (kill $PID && echo "Restarting server...") || echo "Starting server..."
 fi
-
 python daemon.py

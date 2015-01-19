@@ -52,7 +52,8 @@ class EnableCors(object):
       }.iteritems():
         response.headers[header] = value
 
-      return fn(*args, **kwargs)
+      if bottle.request.method != 'OPTIONS':
+        return fn(*args, **kwargs)
 
     return _enable_cors
 

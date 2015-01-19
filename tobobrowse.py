@@ -38,7 +38,7 @@ class EnableCors(object):
   def apply(self, fn, context):
     def _enable_cors(*args, **kwargs):
       for header, value in {
-        'Access-Control-Allow-Origin': Request.headers.get('Origin'),
+        'Access-Control-Allow-Origin': request.headers.get('Origin'),
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
         'Access-Control-Allow-Credentials': 'true',
         'Access-Control-Allow-Headers': ', '.join([

@@ -5,6 +5,7 @@ from gevent import monkey; monkey.patch_all()
 from bottle import \
   app, route, post, delete, run, auth_basic, request, response
 from transmission import *
+from time import sleep
 import json
 import ConfigParser
 from largestfile import largestfile

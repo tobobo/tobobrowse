@@ -84,6 +84,7 @@ def has_path(file_path):
     return False
 
 def has_id(file_id):
+  file_id = int(file_id)
   if file_id in file_ids:
     if file_time_is_valid(file_ids[file_id]['time']):
       return True
@@ -267,8 +268,8 @@ def serve():
 
   @route('/files/<file_id>')
   def get_file(file_id):
-    yield 'hey'
-    if file_id in file_ids and file_time_is_valid(file_ids[file_id]['time']):
+    file_id = int(file_id)
+    if has_id(file_id):
       file_id = file_ids[file_id]
       file_path = file_id['path']
       file_handler = open(file_path, 'r')

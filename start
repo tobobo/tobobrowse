@@ -1,10 +1,7 @@
 #!/bin/bash
 
-PID=$(ps aux | grep python | grep tobobrowse | tr -s " " "\012" | head -2 | tail -1)
+PID=$(cat /tmp/tobobrowse.pid || echo '')
 if [ -n "$PID" ]; then
-  echo "Restarting server..." && kill $PID 2>/dev/null
-else
-  echo "Starting server..."
+  (kill $PID && echo "Restarting server...") || echo "Starting server..."
 fi
-nohup python tobobrowse.py > /dev/null &2>1 &
-exit
+python daemon.py

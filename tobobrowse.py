@@ -1,3 +1,4 @@
+from gevent import monkey; monkey.patch_all()
 from bottle import \
   app, route, post, delete, run, auth_basic, request, response
 from transmission import *
@@ -10,8 +11,14 @@ import urllib
 import urlparse
 import tarfile
 import requests
+import mimetypes
+from datetime import datetime, timedelta
+from random import randint
 
 config = ConfigParser.ConfigParser()
+
+file_ids = {'123': {'path': '/Users/tobiasbutler/Documents/P.S.HD.skatevideos.mp4', 'time': datetime.now()}}
+file_paths = {'/Users/tobiasbutler/Documents/P.S.HD.skatevideos.mp4': '123'}
 
 if len(config.read('config')) < 1:
   config.add_section('transmission')
@@ -63,10 +70,47 @@ def make_tarfile(output_filename, source_dir):
       tar.add(source_dir, arcname=os.path.basename(source_dir))
   return output_filename
 
-def path_to_url(path, file_base, url_base):
-  partial_path = path.split(file_base)[-1]
-  quoted_partial_path = urllib.quote(partial_path)
-  return urlparse.urljoin(url_base, quoted_partial_path)
+def has_path(file_path):
+  if file_path in file_paths:
+    if file_time_is_valid(file_ids[file_paths[file_path]]['time']):
+      return True
+    else:
+      remove_path(file_path)
+      return False
+  else:
+    return False
+
+def has_id(file_id):
+  if file_id in file_ids:
+    if file_time_is_valid(file_ids[file_id]['time']):
+      return True
+    else:
+      remove_path(file_ids[file_id]['path'])
+      return false
+  else:
+    return False
+
+def add_path(file_path):
+  if has_path(file_path):
+    return file_paths[file_path]
+  else:
+    while True:
+      potential_id = randint(0, 999999)
+      if not has_id(potential_id):
+        new_id = potential_id
+        break
+    file_ids[new_id] = {'path': file_path, 'time': datetime.now()}
+    file_paths[file_path] = new_id
+    return new_id
+
+def remove_path(file_path):
+  file_ids.pop(file_paths[file_path], None)
+  file_paths.pop(file_path)
+
+def path_to_url(file_path):
+  file_id = add_path(file_path)
+
+  return urlparse.urljoin('http://cucumber.whatbox.ca:8000/files/', file_id)
 
 def torrent_path(torrent):
   print torrent['downloadDir']
@@ -107,11 +151,7 @@ def get_file(torrent):
     return {
       'path': file_path,
       'name': path.basename(file_path),
-      'url': path_to_url(
-        file_path,
-        torrent['downloadDir'],
-        config.get('transmission', 'http_base')
-      )
+      'url': path_to_url(file_path)
     }
 
   return {
@@ -140,6 +180,8 @@ def remove_files(torrent):
   if path.isfile(gz_path):
     remove(gz_path)
 
+def file_time_is_valid(time):
+    (datetime.now() - time).total_seconds() < 24*60*60
 
 
 def serve():
@@ -216,6 +258,26 @@ def serve():
       return json.dumps({'meta': 'success'})
     else:
       return json.dumps({'meta': 'Torrent not found'})
+
+  @route('/files/<file_id>')
+  def get_file(file_id):
+    if file_id in file_ids and file_time_is_valid(file_ids[file_id]['time']):
+      file_id = file_ids[file_id]
+      file_path = file_id['path']
+      file_handler = open(file_path, 'r')
+      response.set_header('Content-Type', mimetypes.guess_type(file_path)[0])
+      response.set_header('Content-Length', path.getsize(file_path))
+      response.set_header('Content-Disposition', 'attachment; filename="{!s}"'.format(path.basename(file_path)))
+
+      while True:
+        data = file.read(file_handler, 8388608)
+        if not data:
+          close(file_path)
+          break
+        yield data
+    else:
+      response.status = 404
+      yield 'not found'
 
   tobobrowse = app()
   tobobrowse.install(EnableCors())

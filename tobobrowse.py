@@ -291,7 +291,8 @@ def serve():
   run(
     host='0.0.0.0',
     port=config.get('server', 'port'),
-    app=tobobrowse
+    app=tobobrowse,
+    server='gevent'
   )
 
 if __name__ == '__main__':

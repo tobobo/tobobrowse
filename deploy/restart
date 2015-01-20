@@ -1,3 +1,2 @@
 #!/bin/sh
-echo 'Starting server....'
 ./start

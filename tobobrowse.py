@@ -117,7 +117,6 @@ def path_to_url(file_path):
   return urlparse.urljoin('http://cucumber.whatbox.ca:8000/files/', str(file_id))
 
 def torrent_path(torrent):
-  print torrent['downloadDir']
   return path.join(torrent['downloadDir'], torrent['name'])
 
 def torrent_gz_path(torrent):
@@ -185,9 +184,6 @@ def remove_files(torrent):
     remove(gz_path)
 
 def file_time_is_valid(time):
-  print (datetime.now()-time).total_seconds()
-  print 24*60*60
-  print (datetime.now()-time).total_seconds() < 24*60*60
   return (datetime.now() - time).total_seconds() < 24*60*60
 
 
@@ -284,10 +280,6 @@ def serve():
           break
         yield data
     else:
-      if file_id in file_ids:
-        print file_time_is_valid(file_ids[file_id]['time'])
-      print file_ids
-      print file_paths
       response.status = 404
       yield 'not found'
 

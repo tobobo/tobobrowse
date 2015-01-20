@@ -1,6 +1,3 @@
-# import sys
-# if 'threading' in sys.modules:
-#     del sys.modules['threading']
 from gevent import monkey; monkey.patch_all()
 from bottle import \
   app, route, post, delete, run, auth_basic, request, response
@@ -279,7 +276,6 @@ def serve():
         if not data:
           close(file_path)
           break
-        sleep(1)
         yield data
     else:
       response.status = 404

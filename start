@@ -1,5 +1,4 @@
 #!/bin/bash
-echo 'here now'
 
 PID=$(cat /tmp/tobobrowse.pid || echo '')
 if [ -n "$PID" ]; then

@@ -145,7 +145,7 @@ def get_file(torrent):
       files.append(tarfile)
       size = path.getsize(tarfile)
     else:
-      files.append(largest_file_path)
+      files = special_files
       can_download = False
 
   def generate_file_obj(file_path):

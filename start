@@ -4,4 +4,4 @@ PID=$(cat /tmp/tobobrowse.pid || echo '')
 if [ -n "$PID" ]; then
   (kill $PID && echo "Restarting server...") || echo "Starting server..."
 fi
-python daemon.py
+python tobobrowse_daemon.py

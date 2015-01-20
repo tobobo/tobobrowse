@@ -1,7 +1,10 @@
 #!/bin/bash
+echo 'here now'
 
 PID=$(cat /tmp/tobobrowse.pid || echo '')
 if [ -n "$PID" ]; then
   (kill $PID && echo "Restarting server...") || echo "Starting server..."
+else
+  echo "Starting server..."
 fi
 python tobobrowse_daemon.py

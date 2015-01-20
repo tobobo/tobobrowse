@@ -1,4 +1,4 @@
-from gevent import monkey; monkey.patch_all()
+from gevent import monkey; monkey.patch_all(thread=False)
 from bottle import \
   app, route, post, delete, run, auth_basic, request, response
 from transmission import *

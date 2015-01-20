@@ -1,6 +1,3 @@
-import sys
-if 'threading' in sys.modules:
-    del sys.modules['threading']
 from daemonize import Daemonize
 from tobobrowse import serve
 

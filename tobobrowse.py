@@ -186,7 +186,7 @@ def remove_files(torrent):
 def file_time_is_valid(time):
   print (datetime.now()-time).total_seconds()
   print 24*60*60
-  print (datetime.now()-time)).total_seconds() < 24*60*60
+  print (datetime.now()-time).total_seconds() < 24*60*60
   return (datetime.now() - time).total_seconds() < 24*60*60
 
 

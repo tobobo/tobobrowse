@@ -2,9 +2,9 @@
 
 PID=$(ps aux | grep python | grep tobobrowse | tr -s " " "\012" | head -2 | tail -1)
 if [ -n "$PID" ]; then
-  kill $PID 2>/dev/null && echo "Restarting server..." || echo "Starting server..."
+  echo "Restarting server..." && kill $PID 2>/dev/null
 else
   echo "Starting server..."
 fi
-nohup python tobobrowse.py > server.log &2>1 &
+nohup python tobobrowse.py > server.log &2>1 > /dev/null &2>1 &
 exit

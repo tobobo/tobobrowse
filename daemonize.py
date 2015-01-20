@@ -36,7 +36,7 @@ class Daemonize(object):
         if sys.platform == "darwin":
             syslog_address = "/var/run/syslog"
         else:
-            syslog_address = "/dev/log"
+            syslog_address = "log/server.log"
         syslog = handlers.SysLogHandler(syslog_address)
         syslog.setLevel(logging.INFO)
         # Try to mimic to normal syslog messages.
@@ -119,4 +119,3 @@ class Daemonize(object):
         self.logger.warn("Starting daemon.")
 
         self.action()
-

@@ -7,3 +7,4 @@ else
   echo "Starting server..."
 fi
 nohup python tobobrowse.py > server.log &2>1 &
+exit

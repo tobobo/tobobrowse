@@ -69,6 +69,7 @@ def path_to_url(path, file_base, url_base):
   return urlparse.urljoin(url_base, quoted_partial_path)
 
 def torrent_path(torrent):
+  print torrent['downloadDir']
   return path.join(torrent['downloadDir'], torrent['name'])
 
 def torrent_gz_path(torrent):

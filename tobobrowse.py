@@ -278,6 +278,7 @@ def serve():
         if not data:
           close(file_path)
           break
+        sleep(1)
         yield data
     else:
       response.status = 404

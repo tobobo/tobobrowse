@@ -1,3 +1,7 @@
+import sys
+if 'threading' in sys.modules:
+    del sys.modules['threading']
+from gevent import monkey; monkey.patch_all()
 from bottle import \
   app, route, post, delete, run, auth_basic, request, response
 from transmission import *
@@ -13,8 +17,6 @@ import requests
 import mimetypes
 from datetime import datetime, timedelta
 from random import randint
-
-from gevent import monkey; monkey.patch_all()
 
 config = ConfigParser.ConfigParser()
 

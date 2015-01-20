@@ -113,7 +113,7 @@ def remove_path(file_path):
 def path_to_url(file_path):
   file_id = add_path(file_path)
 
-  return urlparse.urljoin('http://cucumber.whatbox.ca:8000/files/', file_id)
+  return urlparse.urljoin('http://cucumber.whatbox.ca:8000/files/', str(file_id))
 
 def torrent_path(torrent):
   print torrent['downloadDir']

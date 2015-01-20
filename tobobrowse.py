@@ -279,6 +279,8 @@ def serve():
           break
         yield data
     else:
+      print file_ids
+      print file_paths
       response.status = 404
       yield 'not found'
 

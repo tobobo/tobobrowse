@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PID=$(cat /tmp/tobobrowse.pid || echo '')
+PID=$(cat /tmp/tobobrowse.pid > /dev/null 2&>1 || echo '')
 if [ -n "$PID" ]; then
   (kill $PID && echo "Restarting server...") || echo "Starting server..."
 else

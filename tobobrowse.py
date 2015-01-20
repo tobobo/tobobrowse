@@ -20,8 +20,8 @@ from random import randint
 
 config = ConfigParser.ConfigParser()
 
-file_ids = {'123': {'path': '/Users/tobiasbutler/Documents/P.S.HD.skatevideos.mp4', 'time': datetime.now()}}
-file_paths = {'/Users/tobiasbutler/Documents/P.S.HD.skatevideos.mp4': '123'}
+file_ids = {}
+file_paths = {}
 
 if len(config.read('config')) < 1:
   config.add_section('transmission')

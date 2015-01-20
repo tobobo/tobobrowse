@@ -282,7 +282,7 @@ def serve():
           break
         yield data
     else:
-      print file_time_is_valid(file_ids[file_id['time']])
+      print file_time_is_valid(file_ids[file_id]['time'])
       print file_ids
       print file_paths
       response.status = 404

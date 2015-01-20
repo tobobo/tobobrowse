@@ -264,6 +264,7 @@ def serve():
 
   @route('/files/<file_id>')
   def get_file(file_id):
+    yield 'hey'
     file_id = int(file_id)
     if has_id(file_id):
       file_id = file_ids[file_id]

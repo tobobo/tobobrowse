@@ -184,7 +184,9 @@ def remove_files(torrent):
     remove(gz_path)
 
 def file_time_is_valid(time):
-    (datetime.now() - time).total_seconds() < 24*60*60
+  print (datetime.now()-time).total_seconds()
+  print 24*60*60
+  (datetime.now() - time).total_seconds() < 24*60*60
 
 
 def serve():
@@ -279,6 +281,7 @@ def serve():
           break
         yield data
     else:
+      print file_time_is_valid(file_ids[file_id['time']])
       print file_ids
       print file_paths
       response.status = 404

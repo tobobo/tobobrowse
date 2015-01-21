@@ -159,7 +159,7 @@ def get_file(torrent):
   files = []
   multi_files = False
 
-  is_video = largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv'))
+  is_video = largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv', 'm4v'))
   print float(largest_file_size) / float(size)
   print largest_file_size, size
   print is_video

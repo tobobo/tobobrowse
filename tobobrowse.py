@@ -274,7 +274,7 @@ def serve():
       response.set_header('Content-Type', mimetypes.guess_type(file_path)[0])
       response.set_header('Content-Length', file_size)
       response.set_header('Content-Disposition', 'attachment; filename="{!s}"'.format(path.basename(file_path)))
-    #   response.status = 206
+      response.status = 206
       content_range_header = request.get_header('Content-Range')
       if content_range_header:
         file_offset = int(re.match(r'bytes=([0-9]+)', content_range_header).group(1))

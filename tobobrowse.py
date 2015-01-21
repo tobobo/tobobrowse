@@ -139,7 +139,7 @@ def path_to_temp_url(file_path):
 def path_to_original_url(file_path, file_base):
   partial_path = path.split(file_base)[-1]
   quoted_partial_path = urllib.quote(partial_path)
-  return urlparse.urljoin(config.get('transmission.http_base'), quoted_partial_path)
+  return urlparse.urljoin(config.get('transmission', 'http_base'), quoted_partial_path)
 
 def torrent_path(torrent):
   return path.join(torrent['downloadDir'], torrent['name'])

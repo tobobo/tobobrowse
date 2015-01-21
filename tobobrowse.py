@@ -140,7 +140,7 @@ def path_to_temp_url(file_path):
 def path_to_original_url(file_path, file_base):
   print file_path
   print file_base
-  partial_path = path.relpath(config.get('transmission', 'public_base'), file_base)
+  partial_path = path.relpath(file_path, config.get('transmission', 'public_base'))
   print partial_path
   quoted_partial_path = urllib.quote(partial_path)
   print quoted_partial_path

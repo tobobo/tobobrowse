@@ -278,7 +278,7 @@ def serve():
         file_handler.seek(file_offset)
       else:
         file_offset = 0
-      response.set_header('Content-Range', 'bytes %i-%i/%i'.format(file_offset, file_size, file_size))
+      response.set_header('Content-Range', 'bytes {!i}-{!i}/{!i}'.format(file_offset, file_size, file_size))
       while True:
         data = file.read(file_handler, 8388608)
         if not data:

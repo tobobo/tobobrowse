@@ -180,7 +180,7 @@ def get_file(torrent):
       'path': file_path,
       'name': path.basename(file_path),
       'url': path_to_temp_url(file_path),
-      'original_url': path_to_original(file_path, torrent['downloadDir'])
+      'original_url': path_to_original_url(file_path, torrent['downloadDir'])
     }
 
   return {

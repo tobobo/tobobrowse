@@ -281,10 +281,16 @@ def serve():
         file_handler.seek(file_offset)
         response.set_header('Content-Range', 'bytes {0}-{1}/{2}'.format(file_offset, file_size, file_size))
         response.set_header('Accept-Range', 'bytes')
-      return file.read(file_handler)
+      while True:
+        data = file.read(file_handler, 1048576)
+        if data:
+          yield data
+        else:
+          file_handler.close()
+          break
     else:
       response.status = 404
-      return 'not found'
+      yield 'not found'
 
   tobobrowse = app()
   tobobrowse.install(EnableCors())

@@ -275,6 +275,9 @@ def serve():
       response.set_header('Content-Length', file_size)
       response.set_header('Content-Disposition', 'attachment; filename="{!s}"'.format(path.basename(file_path)))
       response.set_header('Connection', 'close')
+      response.set_header('Last-Modified', 'Fri, 26 Dec 2014 09:06:29 GMT')
+      response.set_header('ETag', '"549d2515-2bb47000"')
+      response.set_header('Date', 'Wed, 21 Jan 2015 09:17:37 GMT')
       content_range_header = request.get_header('Content-Range')
       if content_range_header:
         file_offset = int(re.match(r'bytes=([0-9]+)', content_range_header).group(1))

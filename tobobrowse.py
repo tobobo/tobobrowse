@@ -37,10 +37,10 @@ if len(config.read('config')) < 1:
 file_ids = {}
 file_paths = {}
 pickle_file_path = 'file_ids.pickle'
-pickle_file = open(pickle_file_path, 'rw+')  
 
 def load_ids():
-  if path.isfile(pickle_file):
+  if path.isfile(pickle_file_path):
+    pickle_file = open(pickle_file_path, 'r')
     pickled = pickle.load(pickle_file)
     if 'file_ids' in pickled:
       file_ids = pickled['file_ids']
@@ -50,6 +50,7 @@ def load_ids():
 load_ids()
 
 def dump_ids():
+  pickle_file = open(pickle_file_path, 'w+')
   pickle.dump({'file_ids': file_ids, 'file_paths': file_paths}, pickle_file)
 
 class StripTrailingSlash(object):

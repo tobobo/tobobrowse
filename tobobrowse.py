@@ -156,9 +156,7 @@ def get_file(torrent):
   largest_file_name = path.basename(largest_file_path)
   special_files = largest_file['special_files']
   size = largest_file['total_size']
-  can_download = True
   files = []
-  multi_files = False
 
   is_video = largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv'))
   if is_video and largest_file_size / size < 0.75:
@@ -174,7 +172,6 @@ def get_file(torrent):
       size = path.getsize(tarfile)
     else:
       files = special_files
-      can_download = False
 
   def generate_file_obj(file_path):
     return {
@@ -187,8 +184,7 @@ def get_file(torrent):
   return {
     'files': map(generate_file_obj, files),
     'num_files': largest_file['num_files'] + largest_file['num_directories'],
-    'size': size,
-    'can_download': can_download
+    'size': size
   }
 
 def get_file_and_add_details(torrent):

@@ -192,7 +192,6 @@ def get_file_and_add_details(torrent):
   torrent['files'] = files['files']
   torrent['numFiles'] = files['num_files']
   torrent['downloadSize'] = files['size']
-  torrent['canDownload'] = files['can_download']
 
   return torrent
 

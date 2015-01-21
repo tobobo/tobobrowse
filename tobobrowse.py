@@ -275,7 +275,9 @@ def serve():
       if content_range_header = request.get_header('Content-Range'):
         file_offset = int(re.match(r'bytes=([0-9]+)', content_range_header).group(1))
         file_handler.seek(file_offset)
-        response.set_header('Content-Range', 'bytes %i-%i/%i'.format(file_offset, file_size, file_size))
+      else:
+        file_offset = 0
+      response.set_header('Content-Range', 'bytes %i-%i/%i'.format(file_offset, file_size, file_size))
       while True:
         data = file.read(file_handler, 8388608)
         if not data:

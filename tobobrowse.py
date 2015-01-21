@@ -15,6 +15,7 @@ import requests
 import mimetypes
 from datetime import datetime, timedelta
 from random import randint
+import re
 
 config = ConfigParser.ConfigParser()
 
@@ -267,10 +268,14 @@ def serve():
       file_id = file_ids[file_id]
       file_path = file_id['path']
       file_handler = open(file_path, 'r')
+      file_size = path.getsize(file_path)
       response.set_header('Content-Type', mimetypes.guess_type(file_path)[0])
-      response.set_header('Content-Length', path.getsize(file_path))
+      response.set_header('Content-Length', file_size)
       response.set_header('Content-Disposition', 'attachment; filename="{!s}"'.format(path.basename(file_path)))
-
+      if content_range_header = request.get_header('Content-Range'):
+        file_offset = int(re.match(r'bytes=([0-9]+)', content_range_header).group(1))
+        file_handler.seek(file_offset)
+        response.set_header('Content-Range', 'bytes %i-%i/%i'.format(file_offset, file_size, file_size))
       while True:
         data = file.read(file_handler, 8388608)
         if not data:

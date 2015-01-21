@@ -161,6 +161,7 @@ def get_file(torrent):
 
   is_video = largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv'))
   print largest_file_size / size
+  print largest_file_size, size
   print is_video
   if is_video and largest_file_size / size < 0.75:
     print 'has many videos'

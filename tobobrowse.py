@@ -281,9 +281,10 @@ def serve():
         file_handler.seek(file_offset)
       else:
         file_offset = 0
-      response.set_header('Content-Range', 'bytes {0}-{1}/{2}'.format(file_offset, file_size, file_size))
+      chunk_size = 8388608
+      response.set_header('Content-Range', 'bytes {0}-{1}/{2}'.format(file_offset, file_offset + chunk_size, file_size))
       while True:
-        data = file.read(file_handler, 8388608)
+        data = file.read(file_handler, chunk_size)
         if not data:
           close(file_path)
           break

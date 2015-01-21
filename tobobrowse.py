@@ -36,7 +36,8 @@ if len(config.read('config')) < 1:
 
 file_ids = {}
 file_paths = {}
-pickle_file = 'file_ids.pickle'
+pickle_file_path = 'file_ids.pickle'
+pickle_file = open(pickle_file_path', rw)
 
 def load_ids():
   if path.isfile(pickle_file):

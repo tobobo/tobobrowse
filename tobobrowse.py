@@ -45,11 +45,11 @@ def load_ids():
       file_ids = pickled['file_ids']
     if 'file_paths' in pickled:
       file_paths = pickled['file_paths']
-      
+
 load_ids()
 
 def dump_ids():
-  pickle.dump({'file_ids': file_ids, 'file_paths': file_paths})
+  pickle.dump({'file_ids': file_ids, 'file_paths': file_paths}, pickle_file)
 
 class StripTrailingSlash(object):
   def __init__(self, app):

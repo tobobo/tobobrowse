@@ -267,7 +267,7 @@ def serve():
   def get_file(file_id):
     file_id = int(file_id)
     if has_id(file_id):
-      # response.status = 206
+      response.status = 206
       file_id = file_ids[file_id]
       file_path = file_id['path']
       file_handler = open(file_path, 'r')

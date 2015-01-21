@@ -15,14 +15,13 @@ import requests
 import mimetypes
 from datetime import datetime, timedelta
 from random import randint
+import pickle
 import re
 
 mimetypes.add_type('video/x-matroska', '.mkv')
 
 config = ConfigParser.ConfigParser()
 
-file_ids = {}
-file_paths = {}
 
 if len(config.read('config')) < 1:
   config.add_section('transmission')
@@ -34,6 +33,23 @@ if len(config.read('config')) < 1:
   config.set('transmission', 'port', os.environ.get('TOBOBROWSE_PORT'))
   config.set('transmission', 'timeout', os.environ.get('TOBOBROWSE_TIMEOUT'))
   config.set('server', 'port', os.environ.get('PORT'))
+
+file_ids = {}
+file_paths = {}
+pickle_file = 'file_ids.pickle'
+
+def load_ids():
+  if path.isfile(pickle_file):
+    pickled = pickle.load(pickle_file)
+    if 'file_ids' in pickled:
+      file_ids = pickled['file_ids']
+    if 'file_paths' in pickled:
+      file_paths = pickled['file_paths']
+      
+load_ids()
+
+def dump_ids():
+  pickle.dump({'file_ids': file_ids, 'file_paths': file_paths})
 
 class StripTrailingSlash(object):
   def __init__(self, app):
@@ -106,16 +122,22 @@ def add_path(file_path):
         break
     file_ids[new_id] = {'path': file_path, 'time': datetime.now()}
     file_paths[file_path] = new_id
+    dump_ids()
     return new_id
 
 def remove_path(file_path):
   file_ids.pop(file_paths[file_path], None)
   file_paths.pop(file_path)
 
-def path_to_url(file_path):
+def path_to_temp_url(file_path):
   file_id = add_path(file_path)
 
   return urlparse.urljoin('http://cucumber.whatbox.ca:8000/files/', str(file_id))
+
+def path_to_original_url(file_path, file_base):
+  partial_path = path.split(file_base)[-1]
+  quoted_partial_path = urllib.quote(partial_path)
+  return urlparse.urljoin(config.get('transmission.http_base'), quoted_partial_path)
 
 def torrent_path(torrent):
   return path.join(torrent['downloadDir'], torrent['name'])
@@ -155,7 +177,8 @@ def get_file(torrent):
     return {
       'path': file_path,
       'name': path.basename(file_path),
-      'url': path_to_url(file_path)
+      'url': path_to_temp_url(file_path),
+      'original_url': path_to_original(file_path, torrent['downloadDir'])
     }
 
   return {

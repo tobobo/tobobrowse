@@ -163,23 +163,19 @@ def get_file(torrent):
   print float(largest_file_size) / float(size)
   print largest_file_size, size
   print is_video
+  print largest_file_name
   if is_video and float(largest_file_size) / float(size) < 0.75:
-    print 'has many videos'
     files = special_files
   else:
     if path.samefile(torrent_folder, largest_file_path):
-      print 'is mainfile'
       files.append(largest_file_path)
     elif is_video:
-      print 'has main video'
       files.append(largest_file_path)
     elif size < 1073741824: # 1 GB
-      print 'is small folder'
       tarfile = make_tarfile(torrent_gz_path(torrent), torrent_folder)
       files.append(tarfile)
       size = path.getsize(tarfile)
     else:
-      print 'is large folder'
       files = special_files
 
   def generate_file_obj(file_path):

@@ -283,12 +283,12 @@ def serve():
         file_offset = 0
       chunk_size = 8388608
       response.set_header('Content-Range', 'bytes {0}-{1}/{2}'.format(file_offset, file_size, file_size))
-      while True:
-        data = file.read(file_handler, chunk_size)
-        if not data:
-          close(file_path)
-          break
-        yield data
+      # while True:
+      yield file.read(file_handler)
+        # if not data:
+        #   close(file_path)
+        #   break
+        # yield data
     else:
       response.status = 404
       yield 'not found'

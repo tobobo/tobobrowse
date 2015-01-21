@@ -277,12 +277,10 @@ def serve():
       content_range_header = request.get_header('Range')
       if content_range_header:
         response.status = 206
-        response.set_header('Content-Range', 'bytes {0}-{1}/{2}'.format(file_offset, file_size, file_size))
-        response.set_header('Accept-Range', 'bytes')
         file_offset = int(re.match(r'bytes=([0-9]+)', content_range_header).group(1))
         file_handler.seek(file_offset)
-      else:
-        file_offset = 0
+        response.set_header('Content-Range', 'bytes {0}-{1}/{2}'.format(file_offset, file_size, file_size))
+        response.set_header('Accept-Range', 'bytes')
       return file.read(file_handler)
     else:
       response.status = 404

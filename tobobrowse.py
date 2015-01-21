@@ -267,7 +267,6 @@ def serve():
   def get_file(file_id):
     file_id = int(file_id)
     if has_id(file_id):
-      # response.status = 206
       file_id = file_ids[file_id]
       file_path = file_id['path']
       file_handler = open(file_path, 'r')
@@ -277,21 +276,17 @@ def serve():
       response.set_header('Content-Disposition', 'attachment; filename="{!s}"'.format(path.basename(file_path)))
       content_range_header = request.get_header('Content-Range')
       if content_range_header:
+        response.status = 206
+        response.set_header('Content-Range', 'bytes {0}-{1}/{2}'.format(file_offset, file_size, file_size))
+        response.set_header('Accept-Range', 'bytes')
         file_offset = int(re.match(r'bytes=([0-9]+)', content_range_header).group(1))
         file_handler.seek(file_offset)
       else:
         file_offset = 0
-      chunk_size = 8388608
-      response.set_header('Content-Range', 'bytes {0}-{1}/{2}'.format(file_offset, file_size, file_size))
-      # while True:
-      yield file.read(file_handler)
-        # if not data:
-        #   close(file_path)
-        #   break
-        # yield data
+      return file.read(file_handler)
     else:
       response.status = 404
-      yield 'not found'
+      return 'not found'
 
   tobobrowse = app()
   tobobrowse.install(EnableCors())

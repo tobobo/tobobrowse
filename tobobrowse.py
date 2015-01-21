@@ -139,7 +139,7 @@ def path_to_temp_url(file_path):
 def path_to_original_url(file_path, file_base):
   print file_path
   print file_base
-  partial_path = path.relpath(file_path, file_base)[-1]
+  partial_path = path.relpath(file_path, file_base)
   print partial_path
   quoted_partial_path = urllib.quote(partial_path)
   print quoted_partial_path

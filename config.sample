@@ -3,6 +3,7 @@ http_base = http://chips.whatbox.ca/private/files/
 host = localhost
 port = 30446
 timeout = 0.05
+public_base = /home/tobobo
 
 [server]
 host = localhost

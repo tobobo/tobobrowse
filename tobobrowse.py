@@ -32,6 +32,7 @@ if len(config.read('config')) < 1:
   config.set('transmission', 'host', os.environ.get('TOBOBROWSE_HOST'))
   config.set('transmission', 'port', os.environ.get('TOBOBROWSE_PORT'))
   config.set('transmission', 'timeout', os.environ.get('TOBOBROWSE_TIMEOUT'))
+  config.set('transmission', 'public_base', os.environm.get('TOBOBROWSE_PUBLIC_BASE'))
   config.set('server', 'port', os.environ.get('PORT'))
 
 file_ids = {}
@@ -139,7 +140,7 @@ def path_to_temp_url(file_path):
 def path_to_original_url(file_path, file_base):
   print file_path
   print file_base
-  partial_path = path.relpath(file_path, file_base)
+  partial_path = path.relpath(config.get('transmission', 'public_base'), file_base)
   print partial_path
   quoted_partial_path = urllib.quote(partial_path)
   print quoted_partial_path

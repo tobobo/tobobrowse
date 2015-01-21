@@ -137,8 +137,12 @@ def path_to_temp_url(file_path):
   return urlparse.urljoin('http://cucumber.whatbox.ca:8000/files/', str(file_id))
 
 def path_to_original_url(file_path, file_base):
+  print file_path
+  print file_base
   partial_path = path.split(file_base)[-1]
+  print partial_path
   quoted_partial_path = urllib.quote(partial_path)
+  print quoted_partial_path
   return urlparse.urljoin(config.get('transmission', 'http_base'), quoted_partial_path)
 
 def torrent_path(torrent):

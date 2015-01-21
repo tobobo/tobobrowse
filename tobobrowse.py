@@ -17,6 +17,8 @@ from datetime import datetime, timedelta
 from random import randint
 import re
 
+mimetypes.add_type('video/x-matroska', '.mkv')
+
 config = ConfigParser.ConfigParser()
 
 file_ids = {}
@@ -47,7 +49,7 @@ class EnableCors(object):
   def apply(self, fn, context):
     def _enable_cors(*args, **kwargs):
       for header, value in {
-        'Access-Control-Allow-Origin': request.headers.get('Origin'),
+        'Access-Control-Allow-Origin': request.headers.get('Origin') or '*',
         'Access-Control-Allow-Methods': 'OPTIONS, GET, POST, PUT, DELETE',
         'Access-Control-Allow-Credentials': 'true',
         'Access-Control-Allow-Headers': ', '.join([

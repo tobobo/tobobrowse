@@ -157,6 +157,7 @@ def get_file(torrent):
   special_files = largest_file['special_files']
   size = largest_file['total_size']
   files = []
+  multi_files = False
 
   is_video = largest_file_name.endswith(('mp4', 'avi', '3gp', 'mkv'))
   if is_video and largest_file_size / size < 0.75:
@@ -184,7 +185,8 @@ def get_file(torrent):
   return {
     'files': map(generate_file_obj, files),
     'num_files': largest_file['num_files'] + largest_file['num_directories'],
-    'size': size
+    'size': size,
+    'can_download': True
   }
 
 def get_file_and_add_details(torrent):
@@ -192,6 +194,7 @@ def get_file_and_add_details(torrent):
   torrent['files'] = files['files']
   torrent['numFiles'] = files['num_files']
   torrent['downloadSize'] = files['size']
+  torrent['canDownload'] = files['can_download']
 
   return torrent
 

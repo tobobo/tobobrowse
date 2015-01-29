@@ -244,7 +244,6 @@ def serve():
     session_cookie = request.get_cookie(cookie_name)
     if session_cookie:
       if session_cookie in sessions:
-        print 'valid cookie'
         return True
 
     transmission_request = requests.get(

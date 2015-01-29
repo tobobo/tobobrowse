@@ -14,9 +14,12 @@ import tarfile
 import requests
 import mimetypes
 from datetime import datetime, timedelta
-from random import randint
+from random import choice, randint
 import pickle
 import re
+import string
+
+sessions = {}
 
 mimetypes.add_type('video/x-matroska', '.mkv')
 
@@ -215,6 +218,8 @@ def remove_files(torrent):
 def file_time_is_valid(time):
   return (datetime.now() - time).total_seconds() < 24*60*60
 
+def random_string(length):
+  return ''.join(choice(string.ascii_uppercase + string.digits) for _ in range(length))
 
 def serve():
 
@@ -235,6 +240,13 @@ def serve():
     )
 
   def user_auth(user, passwd):
+    cookie_name = 'tobobrowsesession'
+    session_cookie = request.get_cookie(cookie_name)
+    if session_cookie:
+      if session_cookie in sessions:
+        print 'valid cookie'
+        return True
+
     transmission_request = requests.get(
       'http://%s:%d' % (
         transmission_config['host'],
@@ -243,9 +255,13 @@ def serve():
       auth=(user, passwd),
       timeout=transmission_config['timeout']
     )
+
     if transmission_request.status_code == 200:
       transmission_config['user'] = user
       transmission_config['passwd'] = passwd
+      session_string = random_string(32)
+      sessions[session_string] = True
+      response.set_cookie(cookie_name, session_string, max_age = 999999999)
       return True
     return False
 

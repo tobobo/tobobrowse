@@ -25,6 +25,7 @@ mimetypes.add_type('video/x-matroska', '.mkv')
 
 config = ConfigParser.ConfigParser()
 
+# Read config from file
 
 if len(config.read('config')) < 1:
   config.add_section('transmission')
@@ -38,9 +39,14 @@ if len(config.read('config')) < 1:
   config.set('transmission', 'public_base', os.environm.get('TOBOBROWSE_PUBLIC_BASE'))
   config.set('server', 'port', os.environ.get('PORT'))
 
+
+## Reading file UIDs from text file
+
 file_ids = {}
 file_paths = {}
 pickle_file_path = 'file_ids.pickle'
+
+# util for loading saved file IDs, invoked immediately
 
 def load_ids():
   if path.isfile(pickle_file_path):
@@ -53,9 +59,17 @@ def load_ids():
 
 load_ids()
 
+
+# util for saving file ids to file
+
 def dump_ids():
   pickle_file = open(pickle_file_path, 'w+')
   pickle.dump({'file_ids': file_ids, 'file_paths': file_paths}, pickle_file)
+
+
+## Middleware
+
+# middleware to strip trailing slash character
 
 class StripTrailingSlash(object):
   def __init__(self, app):
@@ -64,6 +78,8 @@ class StripTrailingSlash(object):
     e['PATH_INFO'] = e['PATH_INFO'].rstrip('/')
     return self.app(e,h)
 
+
+# middleware to allow cross-site requests 
 class EnableCors(object):
   name = 'enable_cors'
   api = 2
@@ -90,11 +106,19 @@ class EnableCors(object):
 
     return _enable_cors
 
+
+# util for tarfile creation
 def make_tarfile(output_filename, source_dir):
   if not path.isfile(output_filename):
     with tarfile.open(output_filename, "w:gz") as tar:
       tar.add(source_dir, arcname=os.path.basename(source_dir))
   return output_filename
+  
+
+## Saving and loading file IDs
+
+
+# util for determining whether a file is present by path
 
 def has_path(file_path):
   if file_path in file_paths:
@@ -106,6 +130,9 @@ def has_path(file_path):
   else:
     return False
 
+
+# similar util, but for IDs
+
 def has_id(file_id):
   file_id = int(file_id)
   if file_id in file_ids:
@@ -116,6 +143,8 @@ def has_id(file_id):
       return false
   else:
     return False
+
+# create a UID for a file
 
 def add_path(file_path):
   if has_path(file_path):
@@ -130,27 +159,41 @@ def add_path(file_path):
     file_paths[file_path] = new_id
     dump_ids()
     return new_id
+    
+    
+# remove a file UID
 
 def remove_path(file_path):
   file_ids.pop(file_paths[file_path], None)
   file_paths.pop(file_path)
+  
+  
+# Get url for UID
 
 def path_to_temp_url(file_path):
   file_id = add_path(file_path)
 
   return urlparse.urljoin('http://cucumber.whatbox.ca:8000/files/', str(file_id))
+  
+# get original HTTP url for file
 
 def path_to_original_url(file_path, file_base):
   partial_path = path.relpath(file_path, file_base)
   quoted_partial_path = urllib.quote(partial_path)
   return urlparse.urljoin(config.get('transmission', 'http_base'), quoted_partial_path)
-
+  
+  
+## Working with torrent objects
+  
+# get path from torrent object
 def torrent_path(torrent):
   return path.join(torrent['downloadDir'], torrent['name'])
 
+# get path for tarballed torrent
 def torrent_gz_path(torrent):
   return torrent_path(torrent) + ".tar.gz"
 
+# get relevant files from torrent
 def get_file(torrent):
   torrent_folder = torrent_path(torrent)
   largest_file = largestfile(torrent_folder)
@@ -195,6 +238,8 @@ def get_file(torrent):
     'size': size,
     'can_download': True
   }
+  
+# get extra file details from transmission api
 
 def get_file_and_add_details(torrent):
   files = get_file(torrent)
@@ -204,6 +249,9 @@ def get_file_and_add_details(torrent):
   torrent['canDownload'] = files['can_download']
 
   return torrent
+  
+  
+# remove torrent from transmission
 
 def remove_files(torrent):
   this_path = torrent_path(torrent)
@@ -214,12 +262,19 @@ def remove_files(torrent):
   gz_path = torrent_gz_path(torrent)
   if path.isfile(gz_path):
     remove(gz_path)
+    
+# check if time is in past 24 hours
 
 def file_time_is_valid(time):
   return (datetime.now() - time).total_seconds() < 24*60*60
 
+# create random string
+
 def random_string(length):
   return ''.join(choice(string.ascii_uppercase + string.digits) for _ in range(length))
+
+
+## Server code
 
 def serve():
 
@@ -230,6 +285,7 @@ def serve():
     'user': '', 'passwd': ''
   }
 
+  # init transmission
   def transmission():
     return Transmission(
       transmission_config['host'],
@@ -239,6 +295,7 @@ def serve():
       transmission_config['passwd']
     )
 
+  # function for basic auth, using transmission auth
   def user_auth(user, passwd):
     cookie_name = 'tobobrowsesession'
     session_cookie = request.get_cookie(cookie_name)
@@ -264,28 +321,33 @@ def serve():
       return True
     return False
 
+  # get a single torrent from list
   def get_torrent_by_name(name):
     torrents = transmission().get_torrent_list([])
     for torrent in torrents:
       if torrent['name'] == name:
         return torrent
 
+  ## routing
   @route('/')
   @auth_basic(user_auth)
   def index():
     return 'hello, friend!'
-
+  
+  # get torrent list
   @route('/torrents')
   @auth_basic(user_auth)
   def torrents():
     return json.dumps({'torrents': transmission().get_torrent_list([])})
 
+  # add torrent
   @post('/torrents')
   @auth_basic(user_auth)
   def add_torrent():
     result = transmission().add_torrent(request.forms.get('torrent[url]'))
     return json.dumps({'meta': 'success'})
 
+  # get individual torrent info
   @route('/torrents/<name>')
   @auth_basic(user_auth)
   def get_torrent_with_file(name):
@@ -295,6 +357,7 @@ def serve():
     else:
       return json.dumps({'meta': 'Torrent not found'})
 
+  # delete torrent
   @route('/torrents/<name>', method=['OPTIONS', 'DELETE'])
   @auth_basic(user_auth)
   def delete_torrent(name):
@@ -306,35 +369,55 @@ def serve():
     else:
       return json.dumps({'meta': 'Torrent not found'})
 
+  # serve a file
   @route('/files/<file_id>')
   def get_file(file_id):
     file_id = int(file_id)
     if has_id(file_id):
+      
+      # get file info
       file_id = file_ids[file_id]
       file_path = file_id['path']
       file_handler = open(file_path, 'r')
       file_size = path.getsize(file_path)
+      
+      # set headers according to file
       response.set_header('Content-Type', mimetypes.guess_type(file_path)[0])
       response.set_header('Content-Length', file_size)
       response.set_header('Content-Disposition', 'attachment; filename="{!s}"'.format(path.basename(file_path)))
+      
+      # respond to ranged requests
       content_range_header = request.get_header('Range')
       if content_range_header:
         response.status = 206
+        
+        # get byte number from header
         file_offset = int(re.match(r'bytes=([0-9]+)', content_range_header).group(1))
+        
+        #seek file to position
         file_handler.seek(file_offset)
+        
+        #set response headers
         response.set_header('Content-Range', 'bytes {0}-{1}/{2}'.format(file_offset, file_size, file_size))
         response.set_header('Accept-Range', 'bytes')
+        
       while True:
+        # read chunk from file
         data = file.read(file_handler, 1048576)
         if data:
+          # return the data
           yield data
         else:
+          # close the file when it's done
           file_handler.close()
           break
     else:
+      # return 404 if there is no file
       response.status = 404
       yield 'not found'
 
+
+  # initialize server
   tobobrowse = app()
   tobobrowse.install(EnableCors())
   tobobrowse = StripTrailingSlash(tobobrowse)

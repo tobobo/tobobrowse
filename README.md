@@ -1,6 +1,6 @@
 # Tobobrowse
 
-A REST api for interacting with transmission. Can be installed and run without root access.
+A REST api for interacting with transmission, a command-line bittorrent client with a Python interface. Can be installed and run without root access.
 
 Uses [gevent](http://www.gevent.org/) to allow non-blocking serving of files, which can be streamed using HTTP Range requests.
 

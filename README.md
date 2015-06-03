@@ -10,6 +10,8 @@ It's convenient to run bittorrent on a remote server to take advantage of the ba
 
 This app interacts both with Transmission and the filesystem to enable simple commands that unify common operations when working with torrents.
 
+It also creates temporary links to files to securely allow access to files without opening up file browsing capabilities.
+
 ## Endpoints
 * GET /torrents - get all torrents
 * POST /torrents - add a torrent with a magnet link

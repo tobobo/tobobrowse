@@ -36,7 +36,7 @@ if len(config.read('config')) < 1:
   config.set('transmission', 'host', os.environ.get('TOBOBROWSE_HOST'))
   config.set('transmission', 'port', os.environ.get('TOBOBROWSE_PORT'))
   config.set('transmission', 'timeout', os.environ.get('TOBOBROWSE_TIMEOUT'))
-  config.set('transmission', 'public_base', os.environm.get('TOBOBROWSE_PUBLIC_BASE'))
+  config.set('transmission', 'public_base', os.environ.get('TOBOBROWSE_PUBLIC_BASE'))
   config.set('server', 'port', os.environ.get('PORT'))
 
 
@@ -173,7 +173,7 @@ def remove_path(file_path):
 def path_to_temp_url(file_path):
   file_id = add_path(file_path)
 
-  return urlparse.urljoin('http://cucumber.whatbox.ca:8000/files/', str(file_id))
+  return urlparse.urljoin(config.get('server', 'url'), str(file_id))
 
 # get original HTTP url for file
 

@@ -21,7 +21,6 @@ import string
 
 sessions = {}
 
-print 'hey'
 mimetypes.add_type('video/x-matroska', '.mkv')
 
 config = ConfigParser.ConfigParser()

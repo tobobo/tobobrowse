@@ -378,7 +378,7 @@ def serve():
       return json.dumps({'meta': 'Torrent not found'})
 
   # serve a file
-  @route('/' + config.get('server.files_prefix') + '/<file_id>')
+  @route('/' + config.get('server', 'files_prefix') + '/<file_id>')
   def get_file(file_id):
     file_id = int(file_id)
     if has_id(file_id):

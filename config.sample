@@ -6,6 +6,7 @@ timeout = 0.05
 public_base = /home/tobobo
 
 [server]
-url = http://cucumber.whatbox.ca:8000/files/
+url = http://cucumber.whatbox.ca:8000/
+files_prefix = files
 host = localhost
 port = 8000

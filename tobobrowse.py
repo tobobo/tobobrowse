@@ -173,14 +173,20 @@ def remove_path(file_path):
 def path_to_temp_url(file_path):
   file_id = add_path(file_path)
 
-  return urlparse.urljoin(config.get('server', 'url'), str(file_id))
+  return urlparse.urljoin(
+    config.get('server', 'url') + config.get('server', 'files_prefix') + '/',
+     str(file_id)
+    )
 
 # get original HTTP url for file
 
 def path_to_original_url(file_path, file_base):
   partial_path = path.relpath(file_path, file_base)
   quoted_partial_path = urllib.quote(partial_path)
-  return urlparse.urljoin(config.get('transmission', 'http_base'), quoted_partial_path)
+  return urlparse.urljoin(
+    config.get('transmission', 'http_base'),
+    quoted_partial_path
+  )
 
 
 ## Working with torrent objects
@@ -271,7 +277,9 @@ def file_time_is_valid(time):
 # create random string
 
 def random_string(length):
-  return ''.join(choice(string.ascii_uppercase + string.digits) for _ in range(length))
+  return ''.join(
+    choice(string.ascii_uppercase + string.digits) for _ in range(length)
+  )
 
 
 ## Server code
@@ -370,7 +378,7 @@ def serve():
       return json.dumps({'meta': 'Torrent not found'})
 
   # serve a file
-  @route('/files/<file_id>')
+  @route('/' + config.get('server.files_prefix') + '/<file_id>')
   def get_file(file_id):
     file_id = int(file_id)
     if has_id(file_id):
@@ -384,7 +392,10 @@ def serve():
       # set headers according to file
       response.set_header('Content-Type', mimetypes.guess_type(file_path)[0])
       response.set_header('Content-Length', file_size)
-      response.set_header('Content-Disposition', 'attachment; filename="{!s}"'.format(path.basename(file_path)))
+      response.set_header(
+        'Content-Disposition',
+        'attachment; filename="{!s}"'.format(path.basename(file_path))
+      )
 
       # respond to ranged requests
       content_range_header = request.get_header('Range')
@@ -392,13 +403,19 @@ def serve():
         response.status = 206
 
         # get byte number from header
-        file_offset = int(re.match(r'bytes=([0-9]+)', content_range_header).group(1))
+        file_offset = int(
+          re.match(r'bytes=([0-9]+)',
+          content_range_header).group(1)
+        )
 
         #seek file to position
         file_handler.seek(file_offset)
 
         #set response headers
-        response.set_header('Content-Range', 'bytes {0}-{1}/{2}'.format(file_offset, file_size, file_size))
+        response.set_header(
+          'Content-Range',
+          'bytes {0}-{1}/{2}'.format(file_offset, file_size, file_size)
+        )
         response.set_header('Accept-Range', 'bytes')
 
       while True:

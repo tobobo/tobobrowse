@@ -21,6 +21,7 @@ import string
 
 sessions = {}
 
+print 'hey'
 mimetypes.add_type('video/x-matroska', '.mkv')
 
 config = ConfigParser.ConfigParser()
@@ -79,7 +80,7 @@ class StripTrailingSlash(object):
     return self.app(e,h)
 
 
-# middleware to allow cross-site requests 
+# middleware to allow cross-site requests
 class EnableCors(object):
   name = 'enable_cors'
   api = 2
@@ -113,7 +114,7 @@ def make_tarfile(output_filename, source_dir):
     with tarfile.open(output_filename, "w:gz") as tar:
       tar.add(source_dir, arcname=os.path.basename(source_dir))
   return output_filename
-  
+
 
 ## Saving and loading file IDs
 
@@ -159,32 +160,32 @@ def add_path(file_path):
     file_paths[file_path] = new_id
     dump_ids()
     return new_id
-    
-    
+
+
 # remove a file UID
 
 def remove_path(file_path):
   file_ids.pop(file_paths[file_path], None)
   file_paths.pop(file_path)
-  
-  
+
+
 # Get url for UID
 
 def path_to_temp_url(file_path):
   file_id = add_path(file_path)
 
   return urlparse.urljoin('http://cucumber.whatbox.ca:8000/files/', str(file_id))
-  
+
 # get original HTTP url for file
 
 def path_to_original_url(file_path, file_base):
   partial_path = path.relpath(file_path, file_base)
   quoted_partial_path = urllib.quote(partial_path)
   return urlparse.urljoin(config.get('transmission', 'http_base'), quoted_partial_path)
-  
-  
+
+
 ## Working with torrent objects
-  
+
 # get path from torrent object
 def torrent_path(torrent):
   return path.join(torrent['downloadDir'], torrent['name'])
@@ -238,7 +239,7 @@ def get_file(torrent):
     'size': size,
     'can_download': True
   }
-  
+
 # get extra file details from transmission api
 
 def get_file_and_add_details(torrent):
@@ -249,8 +250,8 @@ def get_file_and_add_details(torrent):
   torrent['canDownload'] = files['can_download']
 
   return torrent
-  
-  
+
+
 # remove torrent from transmission
 
 def remove_files(torrent):
@@ -262,7 +263,7 @@ def remove_files(torrent):
   gz_path = torrent_gz_path(torrent)
   if path.isfile(gz_path):
     remove(gz_path)
-    
+
 # check if time is in past 24 hours
 
 def file_time_is_valid(time):
@@ -333,7 +334,7 @@ def serve():
   @auth_basic(user_auth)
   def index():
     return 'hello, friend!'
-  
+
   # get torrent list
   @route('/torrents')
   @auth_basic(user_auth)
@@ -374,33 +375,33 @@ def serve():
   def get_file(file_id):
     file_id = int(file_id)
     if has_id(file_id):
-      
+
       # get file info
       file_id = file_ids[file_id]
       file_path = file_id['path']
       file_handler = open(file_path, 'r')
       file_size = path.getsize(file_path)
-      
+
       # set headers according to file
       response.set_header('Content-Type', mimetypes.guess_type(file_path)[0])
       response.set_header('Content-Length', file_size)
       response.set_header('Content-Disposition', 'attachment; filename="{!s}"'.format(path.basename(file_path)))
-      
+
       # respond to ranged requests
       content_range_header = request.get_header('Range')
       if content_range_header:
         response.status = 206
-        
+
         # get byte number from header
         file_offset = int(re.match(r'bytes=([0-9]+)', content_range_header).group(1))
-        
+
         #seek file to position
         file_handler.seek(file_offset)
-        
+
         #set response headers
         response.set_header('Content-Range', 'bytes {0}-{1}/{2}'.format(file_offset, file_size, file_size))
         response.set_header('Accept-Range', 'bytes')
-        
+
       while True:
         # read chunk from file
         data = file.read(file_handler, 1048576)
